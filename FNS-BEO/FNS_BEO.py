@@ -21,7 +21,7 @@ import scipy.stats
 import torch.nn.functional as F
 from sklearn.gaussian_process.kernels import RBF
 from sklearn.gaussian_process import GaussianProcessRegressor
-# from non_dominated_sorting import fast_non_dominated_sort # to implement later
+from non_dominated_sorting import fast_non_dominated_sort
 from latin import latin
 import math
 import warnings
@@ -201,24 +201,24 @@ def FDE(target_image, adversarial_images, first_labels, clean_entropy):
             index.append(sorted_id[0])
         if pro[0] <= rand_value < pro[1]:
             oper_id = 1
-            # fronts = fast_non_dominated_sort(sfit, std)
-            # fist_front = fronts[0]
-            # rand_index1 = random.randint(0, len(fist_front)-1)
-            # index.append(fist_front[rand_index1])
+            fronts = fast_non_dominated_sort(sfit, std)
+            fist_front = fronts[0]
+            rand_index1 = random.randint(0, len(fist_front)-1)
+            index.append(fist_front[rand_index1])
         if pro[1] <= rand_value < pro[2]:
             oper_id = 2
-            # fronts = fast_non_dominated_sort(sfit, std)
-            # fist_front = fronts[0]
-            # front_fit = sfit[fist_front]
-            # fit_index = np.argmin(front_fit)
-            # index.append(fist_front[fit_index])
+            fronts = fast_non_dominated_sort(sfit, std)
+            fist_front = fronts[0]
+            front_fit = sfit[fist_front]
+            fit_index = np.argmin(front_fit)
+            index.append(fist_front[fit_index])
         if pro[2] <= rand_value < pro[3]:
             oper_id = 3
-            # fronts = fast_non_dominated_sort(sfit, std)
-            # fist_front = fronts[0]
-            # front_std = std[fist_front]
-            # std_index = np.argmin(front_std)
-            # index.append(fist_front[std_index])
+            fronts = fast_non_dominated_sort(sfit, std)
+            fist_front = fronts[0]
+            front_std = std[fist_front]
+            std_index = np.argmin(front_std)
+            index.append(fist_front[std_index])
         if pro[3] <= rand_value < pro[4]:
             oper_id = 4
             sorted_id = sorted(range(len(std)), key=lambda k: std[k], reverse=True)
