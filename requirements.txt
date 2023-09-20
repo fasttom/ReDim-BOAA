@@ -1,0 +1,12 @@
+torch>=1.7
+torchvision
+tensorflow
+numpy
+scipy
+sklearn
+pyyaml
+huggingface_hub
+safetensors>=0.2
+clu
+mxnet
+gluoncv

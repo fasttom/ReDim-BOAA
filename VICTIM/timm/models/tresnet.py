@@ -11,7 +11,7 @@ from functools import partial
 import torch
 import torch.nn as nn
 
-from timm.layers import SpaceToDepth, BlurPool2d, ClassifierHead, SEModule,\
+from ..layers import SpaceToDepth, BlurPool2d, ClassifierHead, SEModule,\
     ConvNormActAa, ConvNormAct, DropPath
 from ._builder import build_model_with_cfg
 from ._manipulate import checkpoint_seq

@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 
-from timm.layers import create_conv2d, DropPath, make_divisible, create_act_layer, get_norm_act_layer
+from ..layers import create_conv2d, DropPath, make_divisible, create_act_layer, get_norm_act_layer
 
 __all__ = [
     'SqueezeExcite', 'ConvBnAct', 'DepthwiseSeparableConv', 'InvertedResidual', 'CondConvResidual', 'EdgeResidual']

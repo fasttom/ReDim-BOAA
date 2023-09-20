@@ -15,10 +15,10 @@ except ImportError:
     has_fx_feature_extraction = False
 
 # Layers we went to treat as leaf modules
-from timm.layers import Conv2dSame, ScaledStdConv2dSame, CondConv2d, StdConv2dSame
-from timm.layers.non_local_attn import BilinearAttnTransform
-from timm.layers.pool2d_same import MaxPool2dSame, AvgPool2dSame
-from timm.layers.norm_act import (
+from ..layers import Conv2dSame, ScaledStdConv2dSame, CondConv2d, StdConv2dSame
+from ..layers.non_local_attn import BilinearAttnTransform
+from ..layers.pool2d_same import MaxPool2dSame, AvgPool2dSame
+from ..layers.norm_act import (
     BatchNormAct2d,
     SyncBatchNormAct,
     FrozenBatchNormAct2d,
@@ -50,7 +50,7 @@ _leaf_modules = {
 }
 
 try:
-    from timm.layers import InplaceAbn
+    from ..layers import InplaceAbn
     _leaf_modules.add(InplaceAbn)
 except ImportError:
     pass

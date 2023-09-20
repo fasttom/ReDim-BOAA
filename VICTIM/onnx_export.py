@@ -21,8 +21,8 @@ Copyright 2020 Ross Wightman
 import argparse
 
 import timm
-from timm.utils.model import reparameterize_model
-from timm.utils.onnx import onnx_export
+from .timm.utils.model import reparameterize_model
+from .timm.utils.onnx import onnx_export
 
 parser = argparse.ArgumentParser(description='PyTorch ImageNet Validation')
 parser.add_argument('output', metavar='ONNX_FILE',
