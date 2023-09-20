@@ -22,7 +22,7 @@ import torch.nn.functional as F
 from sklearn.gaussian_process.kernels import RBF
 from sklearn.gaussian_process import GaussianProcessRegressor
 # from non_dominated_sorting import fast_non_dominated_sort # to implement later
-# from latin import latin # to implement later
+from latin import latin
 import math
 import warnings
 
@@ -167,37 +167,38 @@ def FDE(target_image, adversarial_images, first_labels, clean_entropy):
         sample_adv_images = adversarial_images
 
     # init the train data of the surrogate model
-    # population = latin(100, dim, -1, 1)
+    population = latin(100, dim, -1, 1)
     # computing the object value of the train data
-    # K_fit = Kcalculate_fitness(target_image, sample_adv_images, population, first_labels, dim)
+    K_fit = Kcalculate_fitness(target_image, sample_adv_images, population, first_labels, dim)
     eval_num = 100
-    # Best_solu = min(K_fit)
-    # Best_indi_index = np.argmin(K_fit)
-    # Best_indi = population[Best_indi_index, :]
+    Best_solu = min(K_fit)
+    Best_indi_index = np.argmin(K_fit)
+    Best_indi = population[Best_indi_index, :]
     # Surrogate Model
     kernel = RBF(1.0, (1e-5, 1e5))
     gp = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=9)
-    # xobs = population
-    # yobs = np.array(K_fit)
-    # gp.fit(xobs, yobs)
+    xobs = population
+    yobs = np.array(K_fit)
+    gp.fit(xobs, yobs)
 
     # evolution population
-    # population = population[0:50, :]
+    population = population[0:50, :]
     pro = [1/7, 2/7, 3/7, 4/7, 5/7, 6/7, 1]
     r = [0, 0, 0, 0, 0, 0, 0]
     init_entropy = [clean_entropy, clean_entropy, clean_entropy, clean_entropy, clean_entropy, clean_entropy, clean_entropy]
     for step in range(generations):
         if Best_solu < 0:
             break
-        # Mpopulation = mutation(population, dim)
-        # Cpopulation = crossover(Mpopulation, population, dim)
-        # population = selection(Cpopulation, population, gp, Best_solu)
+        Mpopulation = mutation(population, dim)
+        Cpopulation = crossover(Mpopulation, population, dim)
+        population = selection(Cpopulation, population, gp, Best_solu)
+        sfit, std, Pi, Ei, lcb = surrogate_evalu(population, gp, Best_solu)
         index = []
         rand_value = random.random()
         if rand_value < pro[0]:
             oper_id = 0
-            # sorted_id = sorted(range(len(Ei)), key=lambda k: Ei[k], reverse=True)
-            # index.append(sorted_id[0])
+            sorted_id = sorted(range(len(Ei)), key=lambda k: Ei[k], reverse=True)
+            index.append(sorted_id[0])
         if pro[0] <= rand_value < pro[1]:
             oper_id = 1
             # fronts = fast_non_dominated_sort(sfit, std)
@@ -220,17 +221,17 @@ def FDE(target_image, adversarial_images, first_labels, clean_entropy):
             # index.append(fist_front[std_index])
         if pro[3] <= rand_value < pro[4]:
             oper_id = 4
-            # sorted_id = sorted(range(len(std)), key=lambda k: std[k], reverse=True)
-            # index.append(sorted_id[0])
+            sorted_id = sorted(range(len(std)), key=lambda k: std[k], reverse=True)
+            index.append(sorted_id[0])
         if pro[4] <= rand_value < pro[5]:
             oper_id = 5
-            # sorted_id = sorted(range(len(Pi)), key=lambda k: Pi[k], reverse=True)
-            # index.append(sorted_id[0])
+            sorted_id = sorted(range(len(Pi)), key=lambda k: Pi[k], reverse=True)
+            index.append(sorted_id[0])
         if pro[5] <= rand_value < pro[6]:
             oper_id = 6
-            # sorted_id = sorted(range(len(lcb)), key=lambda k: lcb[k], reverse=True)
-            # index.append(sorted_id[-1])
-        # add_xdata = population[index, :]
+            sorted_id = sorted(range(len(lcb)), key=lambda k: lcb[k], reverse=True)
+            index.append(sorted_id[-1])
+        add_xdata = population[index, :]
         size = len(index)
         Tfitness, adv_entro = calculate_fitness(target_image, sample_adv_images, add_xdata, first_labels, dim, size)
         init_entropy[oper_id] = max(adv_entro)
@@ -258,19 +259,19 @@ def FDE(target_image, adversarial_images, first_labels, clean_entropy):
         sBest_solu = min(Tfitness)
         if Best_solu > sBest_solu:
             Best_solu = sBest_solu
-            # if size == 1:
-                # Best_indi = population[index[0], :]
-            # else:
-                # sBest_solu_index = np.argmin(Tfitness)
-                # add_xdata = np.array(add_xdata)
-                # Best_indi = add_xdata[sBest_solu_index, :]
+            if size == 1:
+                Best_indi = population[index[0], :]
+            else:
+                sBest_solu_index = np.argmin(Tfitness)
+                add_xdata = np.array(add_xdata)
+                Best_indi = add_xdata[sBest_solu_index, :]
         if eval_num >= 200:
             break
     
     Final_attack_sign = np.zeros((1, 3, 3 ,32))
     target_image = target_image.cpu().detach().numpy()
-    # for j in range(0, dim):
-        # Final_attack_sign[0, :, :, :] = Final_attack_sign[0, :, :, :] + Best_indi[j] * (sample_adv_images[j, :, :, :] - target_image[0, :, :, :])
+    for j in range(0, dim):
+        Final_attack_sign[0, :, :, :] = Final_attack_sign[0, :, :, :] + Best_indi[j] * (sample_adv_images[j, :, :, :] - target_image[0, :, :, :])
     Final_direction = np.sign(Final_attack_sign)
     final_image = target_image + eps * Final_direction
     final_image = torch.from_numpy(final_image)
