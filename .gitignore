@@ -100,7 +100,7 @@ venv.bak/
 # PyCharm
 .idea
 
-output/
+VICTIM/output/
 
 # PyTorch weights
 *.tar
