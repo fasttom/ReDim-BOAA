@@ -21,7 +21,7 @@ import time
 from typing import Callable, List, Tuple, Union
 
 
-from .timm.models import is_model, list_models
+from timm.models import is_model, list_models
 
 
 parser = argparse.ArgumentParser(description='Per-model process launcher')

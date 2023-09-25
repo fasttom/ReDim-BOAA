@@ -25,7 +25,7 @@ import torch.jit
 import torch.nn as nn
 import torch.nn.functional as F
 
-from ..layers import create_classifier
+from timm.layers import create_classifier
 from ._builder import build_model_with_cfg
 from ._registry import register_model, generate_default_cfgs, register_model_deprecations
 

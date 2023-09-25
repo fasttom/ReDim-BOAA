@@ -26,9 +26,9 @@ except ImportError:
     has_fx_feature_extraction = False
 
 import timm
-from ..timm import list_models, create_model, set_scriptable, get_pretrained_cfg_value
-from ..timm.layers import Format, get_spatial_dim, get_channel_dim
-from ..timm.models import get_notrace_modules, get_notrace_functions
+from timm import list_models, create_model, set_scriptable, get_pretrained_cfg_value
+from timm.layers import Format, get_spatial_dim, get_channel_dim
+from timm.models import get_notrace_modules, get_notrace_functions
 
 if hasattr(torch._C, '_jit_set_profiling_executor'):
     # legacy executor is too slow to compile large models for unit tests

@@ -17,8 +17,8 @@ from typing import Dict
 import torch
 import torch.nn as nn
 
-from ..data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
-from ..layers import DropPath, trunc_normal_, to_2tuple, Mlp
+from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
+from timm.layers import DropPath, trunc_normal_, to_2tuple, Mlp
 from ._builder import build_model_with_cfg
 from ._manipulate import checkpoint_seq
 from ._registry import generate_default_cfgs, register_model
@@ -534,6 +534,9 @@ default_cfgs = generate_default_cfgs({
 
 
 def _create_efficientformer(variant, pretrained=False, **kwargs):
+    if kwargs.get('features_only', None):
+        raise RuntimeError('features_only not implemented for EfficientFormer models.')
+
     model = build_model_with_cfg(
         EfficientFormer, variant, pretrained,
         pretrained_filter_fn=_checkpoint_filter_fn,

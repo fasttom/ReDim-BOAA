@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from ..timm.layers import create_act_layer, set_layer_config
+from timm.layers import create_act_layer, set_layer_config
 
 
 class MLP(nn.Module):

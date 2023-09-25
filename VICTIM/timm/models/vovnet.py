@@ -16,8 +16,8 @@ from typing import List
 import torch
 import torch.nn as nn
 
-from ..data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
-from ..layers import ConvNormAct, SeparableConvNormAct, BatchNormAct2d, ClassifierHead, DropPath, \
+from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
+from timm.layers import ConvNormAct, SeparableConvNormAct, BatchNormAct2d, ClassifierHead, DropPath, \
     create_attn, create_norm_act_layer
 from ._builder import build_model_with_cfg
 from ._manipulate import checkpoint_seq

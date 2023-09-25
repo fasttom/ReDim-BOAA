@@ -21,8 +21,8 @@ Copyright 2020 Ross Wightman
 import argparse
 
 import timm
-from .timm.utils.model import reparameterize_model
-from .timm.utils.onnx import onnx_export
+from timm.utils.model import reparameterize_model
+from timm.utils.onnx import onnx_export
 
 parser = argparse.ArgumentParser(description='PyTorch ImageNet Validation')
 parser.add_argument('output', metavar='ONNX_FILE',
@@ -90,6 +90,8 @@ def main():
         check_forward=args.check_forward,
         training=args.training,
         verbose=args.verbose,
+        input_size=(3, args.img_size, args.img_size),
+        batch_size=args.batch_size,
     )
 
 

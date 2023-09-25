@@ -2,7 +2,7 @@ from torch.nn.modules.batchnorm import BatchNorm2d
 from torchvision.ops.misc import FrozenBatchNorm2d
 
 import timm
-from ..timm.utils.model import freeze, unfreeze
+from timm.utils.model import freeze, unfreeze
 
 
 def test_freeze_unfreeze():

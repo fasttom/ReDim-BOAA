@@ -11,9 +11,9 @@ from copy import deepcopy
 import torch
 from torch.testing._internal.common_utils import TestCase
 from torch.autograd import Variable
-from ..timm.scheduler import PlateauLRScheduler
+from timm.scheduler import PlateauLRScheduler
 
-from ..timm.optim import create_optimizer_v2
+from timm.optim import create_optimizer_v2
 
 
 # HACK relying on internal PyTorch test functionality for comparisons that I don't want to write

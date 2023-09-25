@@ -36,8 +36,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.utils.checkpoint as checkpoint
 
-from ..data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
-from ..layers import DropPath, Mlp, ClassifierHead, to_2tuple, _assert
+from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
+from timm.layers import DropPath, Mlp, ClassifierHead, to_2tuple, _assert
 from ._builder import build_model_with_cfg
 from ._features_fx import register_notrace_function
 from ._manipulate import named_apply

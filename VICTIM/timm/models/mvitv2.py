@@ -23,8 +23,8 @@ import torch
 import torch.utils.checkpoint as checkpoint
 from torch import nn
 
-from ..data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
-from ..layers import Mlp, DropPath, trunc_normal_tf_, get_norm_layer, to_2tuple
+from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
+from timm.layers import Mlp, DropPath, trunc_normal_tf_, get_norm_layer, to_2tuple
 from ._builder import build_model_with_cfg
 from ._features_fx import register_notrace_function
 from ._registry import register_model, register_model_deprecations, generate_default_cfgs
@@ -948,6 +948,9 @@ model_cfgs = dict(
 
 
 def _create_mvitv2(variant, cfg_variant=None, pretrained=False, **kwargs):
+    if kwargs.get('features_only', None):
+        raise RuntimeError('features_only not implemented for Multiscale Vision Transformer models.')
+
     return build_model_with_cfg(
         MultiScaleVit,
         variant,

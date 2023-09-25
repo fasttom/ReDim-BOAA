@@ -20,8 +20,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from ..data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
-from ..layers import StdConv2dSame, StdConv2d, to_2tuple, Format, nchw_to
+from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
+from timm.layers import StdConv2dSame, StdConv2d, to_2tuple, Format, nchw_to
 from ._registry import generate_default_cfgs, register_model, register_model_deprecations
 from .resnet import resnet26d, resnet50d
 from .resnetv2 import ResNetV2, create_resnetv2_stem

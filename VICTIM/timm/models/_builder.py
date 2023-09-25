@@ -7,14 +7,14 @@ from typing import Optional, Dict, Callable, Any, Tuple
 from torch import nn as nn
 from torch.hub import load_state_dict_from_url
 
-from ._features import FeatureListNet, FeatureHookNet
-from ._features_fx import FeatureGraphNet
-from ._helpers import load_state_dict
-from ._hub import has_hf_hub, download_cached_file, check_cached_file, load_state_dict_from_hf
-from ._manipulate import adapt_input_conv
-from ._pretrained import PretrainedCfg
-from ._prune import adapt_model_from_file
-from ._registry import get_pretrained_cfg
+from timm.models._features import FeatureListNet, FeatureHookNet
+from timm.models._features_fx import FeatureGraphNet
+from timm.models._helpers import load_state_dict
+from timm.models._hub import has_hf_hub, download_cached_file, check_cached_file, load_state_dict_from_hf
+from timm.models._manipulate import adapt_input_conv
+from timm.models._pretrained import PretrainedCfg
+from timm.models._prune import adapt_model_from_file
+from timm.models._registry import get_pretrained_cfg
 
 _logger = logging.getLogger(__name__)
 

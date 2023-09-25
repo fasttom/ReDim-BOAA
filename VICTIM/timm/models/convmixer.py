@@ -4,8 +4,8 @@
 import torch
 import torch.nn as nn
 
-from ..data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
-from ..layers import SelectAdaptivePool2d
+from timm.data import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
+from timm.layers import SelectAdaptivePool2d
 from ._registry import register_model, generate_default_cfgs
 from ._builder import build_model_with_cfg
 from ._manipulate import checkpoint_seq
@@ -101,6 +101,9 @@ class ConvMixer(nn.Module):
 
 
 def _create_convmixer(variant, pretrained=False, **kwargs):
+    if kwargs.get('features_only', None):
+        raise RuntimeError('features_only not implemented for ConvMixer models.')
+
     return build_model_with_cfg(ConvMixer, variant, pretrained, **kwargs)
 
 
