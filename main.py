@@ -23,10 +23,10 @@ batch_size = 32
 dataset_name="imagenette2-320"
 dataset_path="./dataset/"+dataset_name
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-
+#mode_name = argparse로 불러온 model name
 model = create_model(
-    model_name=
+    model_name="vit_small_patch32_224",
+    pretrained=True
 )
 
 train_dataset = create_dataset(
@@ -85,7 +85,7 @@ def select_other_images(first_label):
     for images, labels in test_loader:
         if labels != first_label:
             images = images.to(device)
-            outputs = models(images)
+            outputs = model(images)
             outputs = outputs.cpu().detach().numpy()
             if np.argmax(outputs) == labels:
                 target_images = torch.tensor(images)
