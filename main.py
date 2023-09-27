@@ -1,71 +1,94 @@
 import numpy as np
+from matplotlib import pyplot as plt
+
 import torch
-import torch.utils.data as Data
+import torch.nn as nn
+import torch.optim as optim
 import torchvision.datasets as dsets
 import torchvision.transforms as transforms
 # import models
 import torch.nn.functional as F
 # from FNS_BEO import FDE
 import math
+
+from tqdm import tqdm
+import logging
 import warnings
 
 
+import timm
 from timm.data import create_dataset
 from timm.data.loader import create_loader
 from timm.optim import create_optimizer_v2
 from timm.models import create_model
+from timm.loss import cross_entropy
 
 
+logging.getLogger().setLevel(logging.INFO)
 warnings.filterwarnings("ignore")
 
 
-batch_size = 32
+batch_size = 8
 dataset_name="imagenette2-320"
 dataset_path="./dataset/"+dataset_name
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+vic_epo = 100
 #mode_name = argparse로 불러온 model name
-model = create_model(
-    model_name="vit_small_patch32_224",
-    pretrained=True
-)
+
 
 train_dataset = create_dataset(
-    name="",
+    name="train",
     root=dataset_path,
     split="train",
-    is_training=True,
-    batch_size=batch_size,
-    seed=42,
+    seed=42
 )
 
 train_loader = create_loader(
     dataset=train_dataset,
-    input_size=(3, 224, 224),
+    input_size=(3, 320, 320),
     batch_size=batch_size,
-    is_training=False,
-    re_split=True
+    is_training=True,
+    use_prefetcher=False,
+    no_aug=True
 )
 
 test_dataset = create_dataset(
-    name="",
+    name="val",
     root=dataset_path,
-    split="validation",
-    is_training=False,
-    batch_size=batch_size,
+    split="val",
     seed=42
 )
 
 test_loader = create_loader(
     dataset=test_dataset,
-    input_size=(3, 224, 224),
+    input_size=(3, 320, 320),
     batch_size=batch_size,
     is_training=False,
-    re_split=False
+    use_prefetcher=False,
+)
+
+class_names = ['tench', 'English springer', 'cassette player', 'chain saw', 'church', 
+               'French horn', 'garbage truck', 'gas pump', 'golf ball', 'parachute']
+
+model = create_model(
+    model_name="vit_small_patch32_224",
+    pretrained=True
+)
+
+optimizer = create_optimizer_v2(
+    model_or_params=model,
+    opt="adam",
+    lr=1e-4,
+    weight_decay=0,
+    momentum=0.9
 )
 
 
 
-
+model = model.to(device)
+model.train()
+for epo in range(vic_epo):
+    l
 """
 
 # model = model_name().to(device)
