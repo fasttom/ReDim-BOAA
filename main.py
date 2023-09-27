@@ -10,7 +10,7 @@ import math
 import warnings
 
 
-from timm.data import create_dataset, create_reader, create_transform
+from timm.data import create_dataset
 from timm.data.loader import create_loader
 from timm.optim import create_optimizer_v2
 from timm.models import create_model
@@ -19,72 +19,48 @@ from timm.models import create_model
 warnings.filterwarnings("ignore")
 
 
-dataset_name = "CIFAR10"
 batch_size = 32
+dataset_name="imagenette2-320"
+dataset_path="./dataset/"+dataset_name
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-train_dataset=create_dataset(
-    name="imagenette2-320",
-    root="/src/dataset/",
+train_dataset = create_dataset(
+    name="",
+    root=dataset_path,
     split="train",
     is_training=True,
     batch_size=batch_size,
-    download=True,
-    seed=42
+    seed=42,
 )
 
-train_loader=create_loader(
+train_loader = create_loader(
     dataset=train_dataset,
-    
+    input_size=(3, 224, 224),
+    batch_size=batch_size,
+    is_training=False,
+    re_split=True
 )
-test_dataset=create_dataset(
-    name=dataset_name,
-    root="/src/dataset",
+
+test_dataset = create_dataset(
+    name="",
+    root=dataset_path,
     split="validation",
     is_training=False,
     batch_size=batch_size,
-    download=True,
     seed=42
 )
 
-
+test_loader = create_loader(
+    dataset=test_dataset,
+    input_size=(3, 224, 224),
+    batch_size=batch_size,
+    is_training=False,
+    re_split=False
+)
 
 """
 
-
-# for CIFAR
-train_dataset = dsets.CIFAR10(
-    root="/workspaces/Attacking_Image_Models/pytorch-image-model-attack/ATTACK/dataset", #temporary absolute path
-    # root ="../dataset" # to-do relative path
-    download=True,
-    transform=transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.5,0.5,0.5], std=[0.5,0.5,0.5])
-    ]),
-    train=True
-)
-
-train_loader = torch.utils.data.DataLoader(dataset=train_dataset,
-                                          batch_size=batch_size,
-                                          shuffle=False)
-
-test_dataset = dsets.CIFAR10(
-    root="/workspaces/Attacking_Image_Models/pytorch-image-model-attack/ATTACK/dataset", #temporary absolute path
-    # root ="../dataset" # to-do relative path
-    download=True,
-    transform=transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.5,0.5,0.5], std=[0.5,0.5,0.5])
-    ]),
-    train=False
-)
-
-test_loader = torch.utils.data.DataLoader(dataset=test_dataset,
-                                          batch_size=batch_size,
-                                          shuffle=False)
-
-
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # model = model_name().to(device)
 
 # train_model......
