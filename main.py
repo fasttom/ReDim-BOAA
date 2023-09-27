@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import torchvision
 import torchvision.datasets as dsets
 import torchvision.transforms as transforms
 # import models
@@ -16,19 +17,19 @@ import logging
 import warnings
 
 
-import timm
 from timm.data import create_dataset
 from timm.data.loader import create_loader
 from timm.optim import create_optimizer_v2
 from timm.models import create_model
 from timm.loss import cross_entropy
+from timm.scheduler.cosine_lr import CosineLRScheduler
 
 
 logging.getLogger().setLevel(logging.INFO)
 warnings.filterwarnings("ignore")
 
 
-batch_size = 8
+batch_size = 32
 dataset_name="imagenette2-320"
 dataset_path="./dataset/"+dataset_name
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -45,7 +46,7 @@ train_dataset = create_dataset(
 
 train_loader = create_loader(
     dataset=train_dataset,
-    input_size=(3, 320, 320),
+    input_size=(3, 224, 224),
     batch_size=batch_size,
     is_training=True,
     use_prefetcher=False,
@@ -61,7 +62,7 @@ test_dataset = create_dataset(
 
 test_loader = create_loader(
     dataset=test_dataset,
-    input_size=(3, 320, 320),
+    input_size=(3, 224, 224),
     batch_size=batch_size,
     is_training=False,
     use_prefetcher=False,
@@ -69,6 +70,23 @@ test_loader = create_loader(
 
 class_names = ['tench', 'English springer', 'cassette player', 'chain saw', 'church', 
                'French horn', 'garbage truck', 'gas pump', 'golf ball', 'parachute']
+
+def imshow(inp, title=None):
+    """Imshow for Tensor."""
+    inp = inp.numpy().transpose((1, 2, 0))
+    mean = np.array([0.485, 0.456, 0.406])
+    std = np.array([0.229, 0.224, 0.225])
+    inp = std * inp + mean
+    inp = np.clip(inp, 0, 1)
+    plt.imshow(inp)
+    if title is not None:
+        plt.title(title)
+    plt.pause(1) 
+
+    
+inputs, classes = next(iter(train_loader))[:8]
+out = torchvision.utils.make_grid(inputs, nrow=4)
+imshow(out, title=[class_names[x.item()] for x in classes])
 
 model = create_model(
     model_name="vit_small_patch32_224",
@@ -83,12 +101,61 @@ optimizer = create_optimizer_v2(
     momentum=0.9
 )
 
-
-
 model = model.to(device)
-model.train()
-for epo in range(vic_epo):
-    l
+
+class AverageMeter:
+    """
+    Computes and stores the average and current value
+    """
+
+    def __init__(self):
+        self.val = 0
+        self.avg = 0
+        self.sum = 0
+        self.count = 0
+
+    def reset(self):
+        self.val = 0
+        self.avg = 0
+        self.sum = 0
+        self.count = 0
+
+    def update(self, val, n=1):
+        self.val = val
+        self.sum += val * n
+        self.count += n
+        self.avg = self.sum / self.count
+
+
+def train_one_epoch(args, loader, model, loss_fn = nn.CrossEntropyLoss(), **optim_kwargs):
+    logging.info(f"\ncreated model: {model.__class__.__name__}")
+    logging.info(f"created optimizer: {optimizer.__class__.__name__}")
+    
+    losses = []
+    loss_avg = AverageMeter()
+    model = model.cuda()
+    tk0 = tqdm(enumerate(loader), total=len(loader))
+    for i, (inputs, targets) in tk0:
+        inputs = inputs.to(device)
+        targets = targets.to(device)
+        preds = model(inputs)
+        loss = loss_fn(preds, targets)
+        loss.backward()
+        optimizer.step()
+        optimizer.zero_grad()
+        loss_avg.update(loss.item(), loader.batch_size)
+        losses.append(loss_avg.avg)
+        tk0.set_postfix(loss=loss.item())
+    return {args.opt: losses}
+
+
+def train_victim(args, loader, model, loss_fn = nn.CrossEntropyLoss(), **optim_kwargs):
+    losses_list=[]
+    for epo in range(len(vic_epo)):
+        losses_list.append(train_one_epoch(args, loader, model, loss_fn, **optim_kwargs))
+    return model
+
+
 """
 
 # model = model_name().to(device)
@@ -99,7 +166,7 @@ for epo in range(vic_epo):
 count = 0
 total_count = 0
 net_correct = 0
-# model.eval() # enter to evalutaion mode
+model.eval()
 
 def select_other_images(first_label):
     sum_images = []
