@@ -9,7 +9,7 @@ import torchvision.datasets as dsets
 import torchvision.transforms as transforms
 # import models
 import torch.nn.functional as F
-# from FNS_BEO import FDE
+from FNS_BEO import FDE
 import math
 
 from tqdm import tqdm
@@ -29,12 +29,12 @@ logging.getLogger().setLevel(logging.INFO)
 warnings.filterwarnings("ignore")
 
 
-batch_size = 32
+train_batch = 32
+test_batch = 1
 dataset_name="imagenette2-320"
 dataset_path="./dataset/"+dataset_name
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-vic_epo = 100
-#mode_name = argparse로 불러온 model name
+vic_epo = 10
 
 
 train_dataset = create_dataset(
@@ -44,14 +44,16 @@ train_dataset = create_dataset(
     seed=42
 )
 
+
 train_loader = create_loader(
     dataset=train_dataset,
     input_size=(3, 224, 224),
-    batch_size=batch_size,
+    batch_size=train_batch,
     is_training=True,
     use_prefetcher=False,
     no_aug=True
 )
+
 
 test_dataset = create_dataset(
     name="val",
@@ -60,16 +62,19 @@ test_dataset = create_dataset(
     seed=42
 )
 
+
 test_loader = create_loader(
     dataset=test_dataset,
     input_size=(3, 224, 224),
-    batch_size=batch_size,
+    batch_size=test_batch,
     is_training=False,
     use_prefetcher=False,
 )
 
+
 class_names = ['tench', 'English springer', 'cassette player', 'chain saw', 'church', 
                'French horn', 'garbage truck', 'gas pump', 'golf ball', 'parachute']
+
 
 def imshow(inp, title=None):
     """Imshow for Tensor."""
@@ -88,10 +93,12 @@ inputs, classes = next(iter(train_loader))[:8]
 out = torchvision.utils.make_grid(inputs, nrow=4)
 imshow(out, title=[class_names[x.item()] for x in classes])
 
+
 model = create_model(
     model_name="vit_small_patch32_224",
     pretrained=True
 )
+
 
 optimizer = create_optimizer_v2(
     model_or_params=model,
@@ -101,7 +108,9 @@ optimizer = create_optimizer_v2(
     momentum=0.9
 )
 
+
 model = model.to(device)
+model.train()
 
 class AverageMeter:
     """
@@ -127,7 +136,7 @@ class AverageMeter:
         self.avg = self.sum / self.count
 
 
-def train_one_epoch(args, loader, model, loss_fn = nn.CrossEntropyLoss(), **optim_kwargs):
+def train_one_epoch(loader, model, loss_fn = nn.CrossEntropyLoss(), **optim_kwargs):
     logging.info(f"\ncreated model: {model.__class__.__name__}")
     logging.info(f"created optimizer: {optimizer.__class__.__name__}")
     
@@ -146,26 +155,23 @@ def train_one_epoch(args, loader, model, loss_fn = nn.CrossEntropyLoss(), **opti
         loss_avg.update(loss.item(), loader.batch_size)
         losses.append(loss_avg.avg)
         tk0.set_postfix(loss=loss.item())
-    return {args.opt: losses}
+    return losses
 
 
-def train_victim(args, loader, model, loss_fn = nn.CrossEntropyLoss(), **optim_kwargs):
+def train_victim(loader, model, loss_fn = nn.CrossEntropyLoss(), **optim_kwargs):
     losses_list=[]
-    for epo in range(len(vic_epo)):
-        losses_list.append(train_one_epoch(args, loader, model, loss_fn, **optim_kwargs))
+    for epo in range(vic_epo):
+        epo_loss = train_one_epoch(loader=loader, model=model, loss_fn=loss_fn)
+        losses_list.append(losses_list)
     return model
 
 
-"""
-
-# model = model_name().to(device)
-
-# train_model......
-# with optimizer.....
-"""
 count = 0
 total_count = 0
 net_correct = 0
+
+model = train_victim(train_loader, model, nn.CrossEntropyLoss())
+
 model.eval()
 
 def select_other_images(first_label):
@@ -185,7 +191,7 @@ def select_other_images(first_label):
                 if meet == 20:
                     break
     sum_images = np.array(sum_images)
-    num_images = np.szie(sum_images, 0)
+    num_images = np.size(sum_images, 0)
     if num_images > 1:
         sum_images = sum_images.squeeze()
     else:
@@ -215,7 +221,7 @@ for images, labels in test_loader:
             output.itemset(labels, min_value)
             second_label = np.argmax(output)
             sum_images = select_other_images(labels)
-            images, eva_num = FDE(images, sum_images, labels, clean_info_entrophy)
+            images, eva_num = FDE(model, images, sum_images, labels, clean_info_entrophy)
             images = images.to(device)
             labels = labels.to(device)
             outputs = model(images)

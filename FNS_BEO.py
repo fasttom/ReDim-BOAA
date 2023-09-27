@@ -38,66 +38,64 @@ CR = 0.6 # Crossover Rate
 x_min, x_max = [-1, 1]
 eps = 0.1
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-# model = model_name().to(device) # the victim model
-model = create_model(model_name="")
-# model.train() # train the victim model
 
-def Kcalculate_fitness(target_image, sample_adv_images, population, first_labels, dim):
+
+def Kcalculate_fitness(model, target_image, sample_adv_images, population, first_labels, dim):
     target_image = target_image.cpu().detach().numpy()
     Kfitness = []
     function_value = np.zeros(100)
-    attack_direction=np.zeros((100, 3, 32, 32))
+    attack_direction=np.zeros((100, 3, 224, 224))
     for i in range(100):
         for j in range(0,dim):
             attack_direction[i, :, :, :] = attack_direction[i, :, :, :] + population[i,j] * (sample_adv_images[j, :, :, :] - target_image[0, :, :, :])
         attack_direction[i, :, :, :] = np.sign(attack_direction[i, :, :, :])
     
-    # model.eval()
+    model.eval()
     for b in range(100):
         attack_image = target_image + eps * attack_direction[b, :, :, :]
         attack_image = torch.from_numpy(attack_image).to(device)
-        # outputs = model(attack_image.float())
-        # outputs = outputs.cpu().detach().numpy()
-        # d = outputs[0, first_labels]
-        # c = np.min(outputs)
-        # outputs.itemset(first_labels, c)
-        # d = np.max(outputs)
-        # function_value[b] = d-g
-        # Kfitness.append(function_value[b])
+        outputs = model(attack_image.float())
+        outputs = outputs.cpu().detach().numpy()
+        d = outputs[0, first_labels]
+        c = np.min(outputs)
+        outputs.itemset(first_labels, c)
+        g = np.max(outputs)
+        function_value[b] = d-g
+        Kfitness.append(function_value[b])
 
     return Kfitness
 
 
-def calculate_fitness(target_image, sample_adv_images, population, first_labels, dim, size):
+def calculate_fitness(model, target_image, sample_adv_images, population, first_labels, dim, size):
     target_image = target_image.cpu().detach().numpy()
     adv_entropy = []
     fitness = []
     fucntion_value = np.zeros(size)
-    attack_direction = np.zeros((size, 3, 32, 32))
+    attack_direction = np.zeros((size, 3, 224, 224))
     for i in range(size):
         for j in range(0, dim):
             attack_direction[i, :, :, :] = attack_direction[i, :, :, :] + population[i, j] * (sample_adv_images[j, :, :, :] - target_image[0, :, :, :])
         attack_direction[i, :, :, :] = np.sign(attack_direction[i, :, :, :])
 
-    # model.eval()
+    model.eval()
     for b in range(size):
         attack_image = target_image + eps * attack_direction[b, :, :, :]
         attack_image = torch.from_numpy(attack_image).to(device)
-        # outputs = model(attack_image.float())
-        # adv_soft = F.softmax(outputs, dim=1)[0]
+        outputs = model(attack_image.float())
+        adv_soft = F.softmax(outputs, dim=1)[0]
         info_entropy = 0
-        # for i in range(10):
-            # info_entropy += adv_soft[i] * math.log(adv_soft[i])
+        for i in range(10):
+            info_entropy += adv_soft[i] * math.log(adv_soft[i])
         info_entropy = -info_entropy
         info_entropy = info_entropy.cpu().detach().numpy()
         adv_entropy.append(info_entropy)
-        # outputs = outputs.cpu().detach().numpy()
-        # d = outputs[0, first_labels]
-        # c = np.min(outputs)
-        # outputs.itemset(first_labels, c)
-        # g = np.max(outputs)
-        # fucntion_value[b] = d-g
-        # fitness.append(fucntion_value[b])
+        outputs = outputs.cpu().detach().numpy()
+        d = outputs[0, first_labels]
+        c = np.min(outputs)
+        outputs.itemset(first_labels, c)
+        g = np.max(outputs)
+        fucntion_value[b] = d-g
+        fitness.append(fucntion_value[b])
 
     return fitness, adv_entropy
 
@@ -157,7 +155,7 @@ def surrogate_evalu(x_set, gp, Best_solu):
     return means, sigmas, PI, EI, LCB
 
 
-def FDE(target_image, adversarial_images, first_labels, clean_entropy):
+def FDE(model, target_image, adversarial_images, first_labels, clean_entropy):
     clean_entropy = clean_entropy.cpu().detach().numpy()
     num = np.size(adversarial_images, 0)
     if num >= 10:
@@ -171,7 +169,7 @@ def FDE(target_image, adversarial_images, first_labels, clean_entropy):
     # init the train data of the surrogate model
     population = latin(100, dim, -1, 1)
     # computing the object value of the train data
-    K_fit = Kcalculate_fitness(target_image, sample_adv_images, population, first_labels, dim)
+    K_fit = Kcalculate_fitness(model, target_image, sample_adv_images, population, first_labels, dim)
     eval_num = 100
     Best_solu = min(K_fit)
     Best_indi_index = np.argmin(K_fit)
@@ -235,7 +233,7 @@ def FDE(target_image, adversarial_images, first_labels, clean_entropy):
             index.append(sorted_id[-1])
         add_xdata = population[index, :]
         size = len(index)
-        Tfitness, adv_entro = calculate_fitness(target_image, sample_adv_images, add_xdata, first_labels, dim, size)
+        Tfitness, adv_entro = calculate_fitness(model, target_image, sample_adv_images, add_xdata, first_labels, dim, size)
         init_entropy[oper_id] = max(adv_entro)
         max_entropy = max(init_entropy)
         min_entropy = min(init_entropy)
@@ -270,7 +268,7 @@ def FDE(target_image, adversarial_images, first_labels, clean_entropy):
         if eval_num >= 200:
             break
     
-    Final_attack_sign = np.zeros((1, 3, 3 ,32))
+    Final_attack_sign = np.zeros((1, 3, 224, 224))
     target_image = target_image.cpu().detach().numpy()
     for j in range(0, dim):
         Final_attack_sign[0, :, :, :] = Final_attack_sign[0, :, :, :] + Best_indi[j] * (sample_adv_images[j, :, :, :] - target_image[0, :, :, :])
