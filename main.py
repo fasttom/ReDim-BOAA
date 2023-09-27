@@ -23,7 +23,12 @@ batch_size = 32
 dataset_name="imagenette2-320"
 dataset_path="./dataset/"+dataset_name
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model_name = 
 
+
+model = create_model(
+    model_name=
+)
 
 train_dataset = create_dataset(
     name="",
@@ -58,6 +63,9 @@ test_loader = create_loader(
     is_training=False,
     re_split=False
 )
+
+
+
 
 """
 
