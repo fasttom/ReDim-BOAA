@@ -1,6 +1,5 @@
 #    Authors:    Taeyeong Kim
 #    Hanyang University, Korea
-#    Defense Innovation Institute, Chinese Academy of Military Science, China
 #    EMAIL:      fasttom@hanyang.ac.kr
 #    DATE:       #to-do
 # ------------------------------------------------------------------------
