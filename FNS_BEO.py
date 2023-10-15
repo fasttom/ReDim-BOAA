@@ -29,7 +29,7 @@ import warnings
 
 warnings.filterwarnings("ignore")
 # from here
-population_size = 50
+population_size = 100
 generations = 100
 MR = 0.5 # Mutation Rate
 CR = 0.6 # Crossover Rate
@@ -42,15 +42,15 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 def Kcalculate_fitness(model, target_image, sample_adv_images, population, first_labels, dim):
     target_image = target_image.cpu().detach().numpy()
     Kfitness = []
-    function_value = np.zeros(100)
-    attack_direction=np.zeros((100, 3, 224, 224))
-    for i in range(100):
+    function_value = np.zeros(generations)
+    attack_direction=np.zeros((generations, 3, 224, 224))
+    for i in range(generations):
         for j in range(0,dim):
             attack_direction[i, :, :, :] = attack_direction[i, :, :, :] + population[i,j] * (sample_adv_images[j, :, :, :] - target_image[0, :, :, :])
         attack_direction[i, :, :, :] = np.sign(attack_direction[i, :, :, :])
     
     model.eval()
-    for b in range(100):
+    for b in range(generations):
         attack_image = target_image + eps * attack_direction[b, :, :, :]
         attack_image = torch.from_numpy(attack_image).to(device)
         outputs = model(attack_image.float())
@@ -143,10 +143,10 @@ def selection(Cpopulation, population, gp, Best_solu):
 
 def surrogate_evalu(x_set, gp, Best_solu):
     means, sigmas = gp.predict(x_set, return_std=True)
-    PI = np.zeros(50)
-    EI = np.zeros(50)
-    LCB = np.zeros(50)
-    for y in range(50):
+    PI = np.zeros(population_size)
+    EI = np.zeros(population_size)
+    LCB = np.zeros(population_size)
+    for y in range(population_size):
         LCB[y] = means[y] - 2 * sigmas[y]
         z = (Best_solu - means[y]) / sigmas[y]
         PI[y] = scipy.stats.norm.cdf(z)
@@ -166,10 +166,10 @@ def FDE(model, target_image, adversarial_images, first_labels, clean_entropy):
         sample_adv_images = adversarial_images
 
     # init the train data of the surrogate model
-    population = latin(100, dim, -1, 1)
+    population = latin(generations, dim, -1, 1)
     # computing the object value of the train data
     K_fit = Kcalculate_fitness(model, target_image, sample_adv_images, population, first_labels, dim)
-    eval_num = 100
+    eval_num = generations
     Best_solu = min(K_fit)
     Best_indi_index = np.argmin(K_fit)
     Best_indi = population[Best_indi_index, :]
@@ -181,7 +181,7 @@ def FDE(model, target_image, adversarial_images, first_labels, clean_entropy):
     gp.fit(xobs, yobs)
 
     # evolution population
-    population = population[0:50, :]
+    population = population[0:population_size, :]
     pro = [1/7, 2/7, 3/7, 4/7, 5/7, 6/7, 1]
     r = [0, 0, 0, 0, 0, 0, 0]
     init_entropy = [clean_entropy, clean_entropy, clean_entropy, clean_entropy, clean_entropy, clean_entropy, clean_entropy]
