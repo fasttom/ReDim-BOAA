@@ -95,7 +95,8 @@ imshow(out, title=[class_names[x.item()] for x in classes])
 
 
 model = create_model(
-    model_name="vit_small_patch32_224",
+    model_name="resmlp_24_224",
+    # model_name="vit_small_patch32_224",
     pretrained=True
 )
 
@@ -160,9 +161,26 @@ def train_one_epoch(loader, model, loss_fn = nn.CrossEntropyLoss(), **optim_kwar
 
 def train_victim(loader, model, loss_fn = nn.CrossEntropyLoss(), **optim_kwargs):
     losses_list=[]
+    model = model.cuda()
+    logging.info(f"\ncreated model: {model.__class__.__name__}")
+    logging.info(f"created optimizer: {optimizer.__class__.__name__}")
+
+    tk = tqdm(enumerate(loader), total=len(loader))
     for epo in range(vic_epo):
-        epo_loss = train_one_epoch(loader=loader, model=model, loss_fn=loss_fn)
-        losses_list.append(losses_list)
+        losses = []
+        loss_avg = AverageMeter()
+        for i, (inputs, targets) in tk:
+            inputs = inputs.to(device)
+            targets = targets.to(device)
+            preds = model(inputs)
+            loss = loss_fn(preds, targets)
+            loss.backward()
+            optimizer.step()
+            optimizer.zero_grad()
+            loss_avg.update(loss.item(), loader.batch_size)
+            losses.append(loss_avg.avg)
+            tk.set_postfix(loss=loss.item())
+        losses_list.append(losses)
     return model
 
 
