@@ -1,6 +1,6 @@
 # Based On Simon Crase's Notebook uploaded on Kaggle
 # https://www.kaggle.com/code/weka511/autoencoder-implementation-in-pytorch
-
+# Fixed some typo's so it would work properly
 
 # Import functions from libraries
 from matplotlib.pyplot      import close, figure, imshow, savefig, show, title

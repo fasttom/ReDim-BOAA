@@ -2,3 +2,4 @@ dataset/*
 *.ipynb
 logging/*
 __pycache__/*
+*.tgz
