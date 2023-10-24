@@ -4,4 +4,4 @@ logging/*
 __pycache__/*
 *.tgz
 *.JPEG
-/workspaces/KTY_ReDBOA/ReDBOA/attacker/dataset/imagenette2-320
+*.pth
