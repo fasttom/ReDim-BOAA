@@ -1,2 +1,5 @@
 __pycache__/
 attacker/dataset/**
+*.JPEG
+autoencoder_old.py
+*.tgz

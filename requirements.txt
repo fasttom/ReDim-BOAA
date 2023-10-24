@@ -11,4 +11,3 @@ jupyter
 Pillow
 loguru
 argparse
-huggingface_hub
