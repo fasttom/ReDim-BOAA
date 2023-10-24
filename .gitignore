@@ -5,3 +5,4 @@ __pycache__/*
 *.tgz
 *.JPEG
 *.pth
+/attacker/dataset/imagenette2-320
