@@ -1,8 +1,5 @@
-*/dataset/*
-*.ipynb
-logging/*
-__pycache__/*
-*.tgz
 *.JPEG
 *.pth
-/attacker/dataset/imagenette2-320
+**/__pycache__/*
+**/dataset/*
+*.tgz
