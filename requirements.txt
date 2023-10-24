@@ -11,4 +11,4 @@ jupyter
 Pillow
 loguru
 argparse
-cudatoolkit # comment this when using on environment without Nvidia GPU
+huggingface_hub
