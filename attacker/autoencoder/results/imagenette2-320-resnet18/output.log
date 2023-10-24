@@ -1,0 +1,84 @@
+=> parse the args ...
+=> torch version : 2.1.0+cu121
+=> ngpus : 1
+=> modeling the network resnet18 ...
+=> num of params: 22357248 (85M)
+=> building the oprimizer ...
+=> building the dataloader ...
+=> building the criterion ...
+=> starting training engine ...
+2023-10-24 05:19:37.343 | INFO     | utils:display:60 - Epoch: [1][ 0/16]	Time  29.67 ( 29.67)	Data 25.02 (25.02)	Loss 0.1201 (0.1201)	LR 0.0500 (0.0500)
+2023-10-24 05:19:41.125 | INFO     | utils:display:60 - Epoch: [1][10/16]	Time   0.24 (  3.04)	Data 0.00 (2.27)	Loss 0.0854 (0.1022)	LR 0.0500 (0.0500)
+ : save pth for epoch 1
+2023-10-24 05:20:09.969 | INFO     | utils:display:60 - Epoch: [2][ 0/16]	Time  25.91 ( 25.91)	Data 25.59 (25.59)	Loss 0.0888 (0.0888)	LR 0.0500 (0.0500)
+2023-10-24 05:20:13.923 | INFO     | utils:display:60 - Epoch: [2][10/16]	Time   1.58 (  2.72)	Data 0.00 (2.34)	Loss 0.0815 (0.0831)	LR 0.0500 (0.0500)
+ : save pth for epoch 2
+2023-10-24 05:20:41.440 | INFO     | utils:display:60 - Epoch: [3][ 0/16]	Time  25.56 ( 25.56)	Data 25.30 (25.30)	Loss 0.0796 (0.0796)	LR 0.0500 (0.0500)
+2023-10-24 05:20:44.313 | INFO     | utils:display:60 - Epoch: [3][10/16]	Time   0.24 (  2.58)	Data 0.00 (2.34)	Loss 0.0832 (0.0800)	LR 0.0500 (0.0500)
+ : save pth for epoch 3
+2023-10-24 05:21:12.591 | INFO     | utils:display:60 - Epoch: [4][ 0/16]	Time  24.98 ( 24.98)	Data 24.65 (24.65)	Loss 0.0757 (0.0757)	LR 0.0499 (0.0499)
+2023-10-24 05:21:15.225 | INFO     | utils:display:60 - Epoch: [4][10/16]	Time   0.24 (  2.51)	Data 0.00 (2.26)	Loss 0.0777 (0.0780)	LR 0.0499 (0.0499)
+ : save pth for epoch 4
+2023-10-24 05:21:43.697 | INFO     | utils:display:60 - Epoch: [5][ 0/16]	Time  26.52 ( 26.52)	Data 26.26 (26.26)	Loss 0.0744 (0.0744)	LR 0.0498 (0.0498)
+2023-10-24 05:21:46.418 | INFO     | utils:display:60 - Epoch: [5][10/16]	Time   0.24 (  2.66)	Data 0.00 (2.41)	Loss 0.0689 (0.0711)	LR 0.0498 (0.0498)
+ : save pth for epoch 5
+2023-10-24 05:22:14.213 | INFO     | utils:display:60 - Epoch: [6][ 0/16]	Time  25.84 ( 25.84)	Data 25.54 (25.54)	Loss 0.0616 (0.0616)	LR 0.0497 (0.0497)
+2023-10-24 05:22:17.483 | INFO     | utils:display:60 - Epoch: [6][10/16]	Time   0.24 (  2.65)	Data 0.00 (2.40)	Loss 0.0483 (0.0544)	LR 0.0497 (0.0497)
+ : save pth for epoch 6
+2023-10-24 05:22:46.274 | INFO     | utils:display:60 - Epoch: [7][ 0/16]	Time  26.82 ( 26.82)	Data 26.57 (26.57)	Loss 0.0405 (0.0405)	LR 0.0496 (0.0496)
+2023-10-24 05:22:49.271 | INFO     | utils:display:60 - Epoch: [7][10/16]	Time   0.24 (  2.71)	Data 0.00 (2.47)	Loss 0.0383 (0.0390)	LR 0.0496 (0.0496)
+ : save pth for epoch 7
+2023-10-24 05:23:17.961 | INFO     | utils:display:60 - Epoch: [8][ 0/16]	Time  26.75 ( 26.75)	Data 26.49 (26.49)	Loss 0.0353 (0.0353)	LR 0.0494 (0.0494)
+2023-10-24 05:23:20.667 | INFO     | utils:display:60 - Epoch: [8][10/16]	Time   0.24 (  2.68)	Data 0.00 (2.43)	Loss 0.0328 (0.0342)	LR 0.0494 (0.0494)
+ : save pth for epoch 8
+2023-10-24 05:23:49.567 | INFO     | utils:display:60 - Epoch: [9][ 0/16]	Time  26.95 ( 26.95)	Data 26.70 (26.70)	Loss 0.0313 (0.0313)	LR 0.0492 (0.0492)
+2023-10-24 05:23:52.183 | INFO     | utils:display:60 - Epoch: [9][10/16]	Time   0.24 (  2.69)	Data 0.00 (2.44)	Loss 0.0307 (0.0314)	LR 0.0492 (0.0492)
+ : save pth for epoch 9
+2023-10-24 05:24:21.144 | INFO     | utils:display:60 - Epoch: [10][ 0/16]	Time  27.01 ( 27.01)	Data 26.76 (26.76)	Loss 0.0308 (0.0308)	LR 0.0490 (0.0490)
+2023-10-24 05:24:23.678 | INFO     | utils:display:60 - Epoch: [10][10/16]	Time   0.24 (  2.69)	Data 0.00 (2.44)	Loss 0.0310 (0.0299)	LR 0.0490 (0.0490)
+ : save pth for epoch 10
+2023-10-24 05:24:51.623 | INFO     | utils:display:60 - Epoch: [11][ 0/16]	Time  26.02 ( 26.02)	Data 25.77 (25.77)	Loss 0.0291 (0.0291)	LR 0.0488 (0.0488)
+2023-10-24 05:24:54.747 | INFO     | utils:display:60 - Epoch: [11][10/16]	Time   0.40 (  2.65)	Data 0.16 (2.40)	Loss 0.0286 (0.0282)	LR 0.0488 (0.0488)
+ : save pth for epoch 11
+2023-10-24 05:25:23.140 | INFO     | utils:display:60 - Epoch: [12][ 0/16]	Time  26.46 ( 26.46)	Data 26.21 (26.21)	Loss 0.0258 (0.0258)	LR 0.0485 (0.0485)
+2023-10-24 05:25:25.601 | INFO     | utils:display:60 - Epoch: [12][10/16]	Time   0.24 (  2.63)	Data 0.00 (2.38)	Loss 0.0284 (0.0273)	LR 0.0485 (0.0485)
+ : save pth for epoch 12
+2023-10-24 05:25:54.150 | INFO     | utils:display:60 - Epoch: [13][ 0/16]	Time  26.59 ( 26.59)	Data 26.34 (26.34)	Loss 0.0258 (0.0258)	LR 0.0482 (0.0482)
+2023-10-24 05:25:56.629 | INFO     | utils:display:60 - Epoch: [13][10/16]	Time   0.24 (  2.64)	Data 0.00 (2.40)	Loss 0.0263 (0.0263)	LR 0.0482 (0.0482)
+ : save pth for epoch 13
+2023-10-24 05:26:24.584 | INFO     | utils:display:60 - Epoch: [14][ 0/16]	Time  26.05 ( 26.05)	Data 25.78 (25.78)	Loss 0.0249 (0.0249)	LR 0.0479 (0.0479)
+2023-10-24 05:26:27.669 | INFO     | utils:display:60 - Epoch: [14][10/16]	Time   0.24 (  2.65)	Data 0.00 (2.40)	Loss 0.0257 (0.0258)	LR 0.0479 (0.0479)
+ : save pth for epoch 14
+2023-10-24 05:26:54.157 | INFO     | utils:display:60 - Epoch: [15][ 0/16]	Time  24.58 ( 24.58)	Data 24.32 (24.32)	Loss 0.0249 (0.0249)	LR 0.0476 (0.0476)
+2023-10-24 05:26:58.698 | INFO     | utils:display:60 - Epoch: [15][10/16]	Time   0.24 (  2.65)	Data 0.00 (2.40)	Loss 0.0251 (0.0250)	LR 0.0476 (0.0476)
+ : save pth for epoch 15
+2023-10-24 05:27:25.914 | INFO     | utils:display:60 - Epoch: [16][ 0/16]	Time  25.30 ( 25.30)	Data 25.04 (25.04)	Loss 0.0237 (0.0237)	LR 0.0473 (0.0473)
+2023-10-24 05:27:28.822 | INFO     | utils:display:60 - Epoch: [16][10/16]	Time   0.24 (  2.56)	Data 0.00 (2.32)	Loss 0.0237 (0.0245)	LR 0.0473 (0.0473)
+ : save pth for epoch 16
+2023-10-24 05:27:57.905 | INFO     | utils:display:60 - Epoch: [17][ 0/16]	Time  25.84 ( 25.84)	Data 25.58 (25.58)	Loss 0.0251 (0.0251)	LR 0.0469 (0.0469)
+2023-10-24 05:28:00.742 | INFO     | utils:display:60 - Epoch: [17][10/16]	Time   0.24 (  2.61)	Data 0.00 (2.36)	Loss 0.0233 (0.0239)	LR 0.0469 (0.0469)
+ : save pth for epoch 17
+2023-10-24 05:28:30.025 | INFO     | utils:display:60 - Epoch: [18][ 0/16]	Time  27.34 ( 27.34)	Data 27.09 (27.09)	Loss 0.0235 (0.0235)	LR 0.0465 (0.0465)
+2023-10-24 05:28:32.462 | INFO     | utils:display:60 - Epoch: [18][10/16]	Time   0.24 (  2.71)	Data 0.00 (2.46)	Loss 0.0238 (0.0233)	LR 0.0465 (0.0465)
+ : save pth for epoch 18
+2023-10-24 05:29:00.221 | INFO     | utils:display:60 - Epoch: [19][ 0/16]	Time  25.85 ( 25.85)	Data 25.60 (25.60)	Loss 0.0231 (0.0231)	LR 0.0461 (0.0461)
+2023-10-24 05:29:03.599 | INFO     | utils:display:60 - Epoch: [19][10/16]	Time   0.24 (  2.66)	Data 0.00 (2.41)	Loss 0.0248 (0.0236)	LR 0.0461 (0.0461)
+ : save pth for epoch 19
+2023-10-24 05:29:31.626 | INFO     | utils:display:60 - Epoch: [20][ 0/16]	Time  26.09 ( 26.09)	Data 25.84 (25.84)	Loss 0.0229 (0.0229)	LR 0.0457 (0.0457)
+2023-10-24 05:29:34.835 | INFO     | utils:display:60 - Epoch: [20][10/16]	Time   0.24 (  2.66)	Data 0.00 (2.42)	Loss 0.0230 (0.0229)	LR 0.0457 (0.0457)
+ : save pth for epoch 20
+2023-10-24 05:30:03.273 | INFO     | utils:display:60 - Epoch: [21][ 0/16]	Time  26.55 ( 26.55)	Data 26.29 (26.29)	Loss 0.0227 (0.0227)	LR 0.0452 (0.0452)
+2023-10-24 05:30:06.066 | INFO     | utils:display:60 - Epoch: [21][10/16]	Time   0.24 (  2.67)	Data 0.00 (2.42)	Loss 0.0221 (0.0227)	LR 0.0452 (0.0452)
+ : save pth for epoch 21
+2023-10-24 05:30:33.699 | INFO     | utils:display:60 - Epoch: [22][ 0/16]	Time  25.65 ( 25.65)	Data 25.39 (25.39)	Loss 0.0225 (0.0225)	LR 0.0448 (0.0448)
+2023-10-24 05:30:36.965 | INFO     | utils:display:60 - Epoch: [22][10/16]	Time   0.30 (  2.63)	Data 0.05 (2.38)	Loss 0.0223 (0.0225)	LR 0.0448 (0.0448)
+ : save pth for epoch 22
+2023-10-24 05:31:05.592 | INFO     | utils:display:60 - Epoch: [23][ 0/16]	Time  26.72 ( 26.72)	Data 26.46 (26.46)	Loss 0.0216 (0.0216)	LR 0.0443 (0.0443)
+2023-10-24 05:31:08.033 | INFO     | utils:display:60 - Epoch: [23][10/16]	Time   0.24 (  2.65)	Data 0.00 (2.41)	Loss 0.0244 (0.0223)	LR 0.0443 (0.0443)
+ : save pth for epoch 23
+2023-10-24 05:31:36.068 | INFO     | utils:display:60 - Epoch: [24][ 0/16]	Time  26.14 ( 26.14)	Data 25.86 (25.86)	Loss 0.0227 (0.0227)	LR 0.0438 (0.0438)
+2023-10-24 05:31:39.104 | INFO     | utils:display:60 - Epoch: [24][10/16]	Time   0.24 (  2.65)	Data 0.00 (2.41)	Loss 0.0242 (0.0221)	LR 0.0438 (0.0438)
+ : save pth for epoch 24
+2023-10-24 05:32:07.372 | INFO     | utils:display:60 - Epoch: [25][ 0/16]	Time  26.37 ( 26.37)	Data 26.11 (26.11)	Loss 0.0225 (0.0225)	LR 0.0432 (0.0432)
+2023-10-24 05:32:10.264 | INFO     | utils:display:60 - Epoch: [25][10/16]	Time   0.38 (  2.66)	Data 0.14 (2.41)	Loss 0.0216 (0.0217)	LR 0.0432 (0.0432)
+ : save pth for epoch 25

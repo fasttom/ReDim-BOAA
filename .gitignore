@@ -5,4 +5,4 @@ __pycache__/*
 *.tgz
 *.JPEG
 *.pth
-attacker/imagenet-autoencoder
+attacker/dataset/*
