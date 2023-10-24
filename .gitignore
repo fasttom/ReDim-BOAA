@@ -1,5 +1,2 @@
-*.JPEG
-*.pth
-**/__pycache__/*
-attacker/dataset/
-*.tgz
+__pycache__/
+attacker/dataset/**
