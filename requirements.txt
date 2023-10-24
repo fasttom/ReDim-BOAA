@@ -8,3 +8,7 @@ torchvision
 timm
 tensorboard
 jupyter
+Pillow
+loguru
+argparse
+cudatoolkit # comment this when using on environment without Nvidia GPU
