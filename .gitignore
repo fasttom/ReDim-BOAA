@@ -3,3 +3,4 @@ attacker/dataset/**
 *.JPEG
 autoencoder_old.py
 *.tgz
+victim/dataset/**
