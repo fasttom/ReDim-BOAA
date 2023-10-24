@@ -30,9 +30,9 @@ dataset_path="./dataset/"+dataset_name
 
 # Hyperparameters
 # ENCODER = [28*28, 400,200,100,50,25,6]  # sizes of encoder layers - old
-ENCODER = [3*224*224, 400, 100]  # sizes of encoder layers - new
+ENCODER = [3*224*224, 100, 6]  # sizes of encoder layers - new
 DECODER = []                           # Decoder layers will be a mirror image of encoder
-LR      = 0.001                        # Learning rate
+LR      = 0.05                        # Learning rate
 N       = 1000                         # Number of epochs
 
 
@@ -73,7 +73,7 @@ class AutoEncoder(Module):
 
     def __init__(self,
                  # encoder_sizes         = [28*28, 400, 200, 100, 50, 25, 6],
-                 encoder_sizes         = [3*224*224, 400, 100],
+                 encoder_sizes         = [3*224*224, 100, 6],
                  encoder_non_linearity = ReLU(inplace=True),
                  decoder_sizes         = [],
                  decoder_non_linearity = ReLU(inplace=True)):
