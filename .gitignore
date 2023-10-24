@@ -1,5 +1,5 @@
 *.JPEG
 *.pth
 **/__pycache__/*
-**/dataset/**
+**/dataset/
 *.tgz
