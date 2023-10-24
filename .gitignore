@@ -4,3 +4,5 @@ attacker/dataset/**
 autoencoder_old.py
 *.tgz
 victim/dataset/**
+attacker/autoencoder/figs/**
+attacker/autoencoder/list/**
