@@ -18,12 +18,22 @@ from torchvision.transforms import Compose, ToTensor
 from torchvision.utils      import make_grid
 
 
+from timm.data import create_dataset
+from timm.data.loader import create_loader
+
+
+train_batch = 256
+test_batch = 32
+dataset_name="imagenette2-320"
+dataset_path="./dataset/"+dataset_name
+
+
 # Hyperparameters
-ENCODER = [28*28, 400,200,100,50,25,6]  # sizes of encoder layers - old
-# ENCODER = [224*224*3,400,200,100,50,25,6]  # sizes of encoder layers - new
+# ENCODER = [28*28, 400,200,100,50,25,6]  # sizes of encoder layers - old
+ENCODER = [3*224*224, 400, 100]  # sizes of encoder layers - new
 DECODER = []                           # Decoder layers will be a mirror image of encoder
 LR      = 0.001                        # Learning rate
-N       = 32                           # Number of epochs
+N       = 1000                         # Number of epochs
 
 
 # Implement of autoencoder
@@ -62,8 +72,8 @@ class AutoEncoder(Module):
             return Sequential(*[item for pair in [(layer,non_linearity) for layer in linears] for item in pair])
 
     def __init__(self,
-                 encoder_sizes         = [28*28, 400, 200, 100, 50, 25, 6],
-                 # encoder_sizes         = [224*224*3, 400, 200, 100, 50, 25, 6],
+                 # encoder_sizes         = [28*28, 400, 200, 100, 50, 25, 6],
+                 encoder_sizes         = [3*224*224, 400, 100],
                  encoder_non_linearity = ReLU(inplace=True),
                  decoder_sizes         = [],
                  decoder_non_linearity = ReLU(inplace=True)):
@@ -123,7 +133,7 @@ def train(loader,model,optimizer,criterion,
     for epoch in range(N):
         loss = 0
         for batch_features, _ in loader:
-            batch_features = batch_features.view(-1, 784).to(dev)
+            batch_features = batch_features.view(-1, 150528).to(dev)
             optimizer.zero_grad()
             outputs        = model(batch_features)
             train_loss     = criterion(outputs, batch_features)
@@ -146,11 +156,43 @@ optimizer = Adam(model.parameters(), lr = LR)
 criterion     = MSELoss()
 transform     = Compose([ToTensor()])
 
-train_dataset = MNIST(root="~/torch_datasets", train = True, transform = transform, download  = True)
-test_dataset  = MNIST(root="~/torch_datasets", train = False, transform = transform, download  = True)
 
-train_loader  = DataLoader(train_dataset, batch_size = 128, shuffle = True,num_workers = 4)
-test_loader   = DataLoader(test_dataset, batch_size  = 32, shuffle = False, num_workers = 4)
+train_dataset = create_dataset(
+    name="train",
+    root=dataset_path,
+    split="train",
+    seed=42,
+)
+
+
+train_loader = create_loader(
+    dataset=train_dataset,
+    input_size=(3, 224, 224),
+    batch_size=train_batch,
+    is_training=True,
+    use_prefetcher=False,
+    no_aug=True,
+    num_workers=4
+)
+
+
+test_dataset = create_dataset(
+    name="val",
+    root=dataset_path,
+    split="val",
+    seed=42
+)
+
+
+test_loader = create_loader(
+    dataset=test_dataset,
+    input_size=(3, 224, 224),
+    batch_size=test_batch,
+    is_training=False,
+    use_prefetcher=False,
+    num_workers=4
+)
+
 
 #Train Network
 Losses = train(train_loader,model,optimizer,criterion, N = N, dev = dev)
@@ -174,25 +216,26 @@ def reconstruct(loader,model,criterion,
            figs     Directory for storing images
     '''
 
+    
     def plot(original=None,decoded=None):
         '''Plot original images and decoded images'''
         fig = figure(figsize=(10,10))
         ax    = fig.subplots(nrows=2)
-        ax[0].imshow(make_grid(original.view(-1,1,28,28)).permute(1, 2, 0))
+        ax[0].imshow(make_grid(original.view(-1,3, 224, 224)).permute(1, 2, 0))
         ax[0].set_title('Raw images')
         scaled_decoded = decoded/decoded.max()
-        ax[1].imshow(make_grid(scaled_decoded.view(-1,1,28,28)).permute(1, 2, 0))
+        ax[1].imshow(make_grid(scaled_decoded.view(-1,3,224,224)).permute(1, 2, 0))
         ax[1].set_title(f'Reconstructed images after {N} epochs')
         savefig(join(figs,f'{prefix}-comparison-{i}'))
         if not show:
             close (fig)
-
-    samples = [] if n_images==-1 else sample(range(len(loader)//loader.batch_size),
+    
+    samples = [] if n_images==-1 else sample(range(len(loader)),
                                              k = n_images)
     loss = 0.0
     with no_grad():
         for i,(batch_features, _) in enumerate(loader):
-            batch_features = batch_features.view(-1, 784).to(dev)
+            batch_features = batch_features.view(-1, 150528).to(dev)
             outputs        = model(batch_features)
             test_loss      = criterion(outputs, batch_features)
             loss          += test_loss.item()
@@ -267,7 +310,7 @@ plot_losses(Losses,
 
 def plot_encoding(loader,model,
                 figs    = './figs',
-                dev     =  dev,
+                dev     =  'cpu',
                 colours = [],
                 show    = False,
                 prefix  = 'ae'):
@@ -278,7 +321,7 @@ def plot_encoding(loader,model,
     def extract_batch(batch_features, labels,index):
         '''Extract xs, ys, and colours for one batch'''
 
-        batch_features = batch_features.view(-1, 784).to(dev)
+        batch_features = batch_features.view(-1, 150528).to(dev)
         encoded        = model(batch_features).detach().cpu().tolist()
         return list(zip(*([encoded[k][2*index] for k in range(len(labels))],
                           [encoded[k][2*index+1] for k in range(len(labels))],
@@ -313,6 +356,7 @@ def plot_encoding(loader,model,
 # Plot encoded data
 plot_encoding(test_loader,model,
                   show    = True,
+                  dev = dev,
                   colours = ['xkcd:purple',
                              'xkcd:green',
                              'xkcd:blue',
