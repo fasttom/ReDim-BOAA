@@ -3,3 +3,5 @@ dataset/*
 logging/*
 __pycache__/*
 *.tgz
+*.JPEG
+*.pth
