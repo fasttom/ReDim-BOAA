@@ -14,7 +14,7 @@ def get_autoencoder(encoder_name:str, arch:str):
         model = VGGAutoEncoder(vgg_config(arch))
     else:
         model = ResNetAutoEncoder(resnet_config(arch))
-    true_path = os.path.join(os.curdir, "attacker/autoencoder/result/"+encoder_name)
+    true_path = os.path.join(os.curdir, "attacker/autoencoder/results/"+encoder_name)
     checkpoint = torch.load(true_path)
     state_dict = checkpoint["state_dict"]
     model.load_state_dict(state_dict, False)
