@@ -3,6 +3,7 @@ attacker/dataset/**
 *.JPEG
 autoencoder_old.py
 *.tgz
+*.pth
 victim/dataset/**
 attacker/autoencoder/figs/**
 attacker/autoencoder/list/**
