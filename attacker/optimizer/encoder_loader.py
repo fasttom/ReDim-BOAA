@@ -1,8 +1,10 @@
 import os
+import sys
 import torch
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 import torchvision
-from attacker.autoencoder.models.vgg import VGGAutoEncoder
-from attacker.autoencoder.models.resnet import ResNetAutoEncoder
+from autoencoder.models.vgg import VGGAutoEncoder
+from autoencoder.models.resnet import ResNetAutoEncoder
 
 
 def get_autoencoder(encoder_path:str, arch:str):
