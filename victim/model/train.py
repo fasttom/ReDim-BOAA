@@ -187,3 +187,6 @@ total_count = 0
 net_correct = 0
 
 model = train_victim(train_loader, model, nn.CrossEntropyLoss())
+
+model.eval()
+torch.save(model.state_dict(), "../results/victim.pth")
