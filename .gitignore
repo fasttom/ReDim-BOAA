@@ -9,3 +9,4 @@ victim/dataset/**
 attacker/autoencoder/list/**
 attacker/autoencoder/results/**
 dataset/**
+*/*_old/**
