@@ -2,7 +2,7 @@ import os
 import sys
 import torch
 import torchvision
-"""
+
 from attacker.autoencoder.models.vgg import VGGAutoEncoder
 from attacker.autoencoder.models.resnet import ResNetAutoEncoder
 from attacker.autoencoder.models.vgg import get_configs as vgg_config
@@ -22,4 +22,3 @@ def get_autoencoder(encoder_name:str, arch:str):
     encoder = model.encoder
     decoder = model.decoder
     return encoder, decoder
-"""

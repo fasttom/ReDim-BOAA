@@ -8,5 +8,5 @@ autoencoder_old.py
 victim/dataset/**
 attacker/autoencoder/list/**
 attacker/autoencoder/results/**
-dataset/**
+**/dataset/**
 */*_old/**
