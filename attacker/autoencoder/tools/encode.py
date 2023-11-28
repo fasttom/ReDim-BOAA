@@ -11,7 +11,7 @@ import sys
 sys.path.append("./")
 
 import utils
-import models.builder as builder
+import models.builer as builder
 
 import os
 
