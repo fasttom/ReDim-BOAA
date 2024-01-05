@@ -180,6 +180,9 @@ class Encoder(nn.Module):
         x = self.layer2(x)
         x = self.layer3(x)
         x = self.layer4(x)
+        # to-do: add flatten layer
+        # to-do: add linear layer 1
+        # to-do: add linear layer 2
 
         return x
 

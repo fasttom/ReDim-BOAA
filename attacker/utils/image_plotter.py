@@ -18,8 +18,8 @@ def check_plot(model, loader):
             inputs = data.to("cuda")
             outputs = model.decoder(model.encoder(inputs))
 
-            input_samples = inputs.permute(0,2,3,1).cpu().numpy()
-            reconstructed_samples = outputs.permute(0,2,3,1).cpu().numpy()
+            input_samples = inputs.permute(0,2,3,1).cpu().numpy() # BRG to RGB
+            reconstructed_samples = outputs.permute(0,2,3,1).cpu().numpy() # BRG to RGB
             break
 
     input_samples = normalize_image(input_samples)

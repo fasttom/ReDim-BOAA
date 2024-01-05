@@ -173,6 +173,9 @@ class Decoder(nn.Module):
         return nn.Sequential(*layers)
 
     def _forward_impl(self, x: Tensor) -> Tensor:
+        # to-do: add linear layer 2
+        # to-do: add linear layer 1
+        # to-do: add unflatten layer
         x = self.layer4(x)
         x = self.layer3(x)
         x = self.layer2(x)
@@ -181,7 +184,7 @@ class Decoder(nn.Module):
         x = self.unpool(x)
         x = self.de_conv1(x)
         x = self.bn1(x)
-        # x = self.relu(x) - input image is not non-negative, is is centered around 0.
+        # x = self.relu(x) - input image is not non-negative, it is centered around 0.
         # if relu is used, the output image will be non-negative and will not be centered around 0.
         return x
 

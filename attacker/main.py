@@ -7,13 +7,13 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-epochs = 1000
+epochs = 100
 train_AE = False
 
 train_loader, test_loader, attack_loader = load_data(dataset_type="timm", dataset_name="imagenette2-320", input_size=(3, 224, 224), train_batch=256, test_batch=32)
 
 if train_AE:
-    model = AE(network='default', num_layers=34).to("cuda")
+    model = AE(network='default', num_layers=18).to("cuda")
     encoder = model.encoder
     decoder = model.decoder
 
@@ -40,15 +40,15 @@ if train_AE:
         epoch_loss /= len(train_loader)
         if epoch_loss < best_loss:
             best_loss = epoch_loss
-            torch.save(model.state_dict(), "./autoencoder/models/Res_AE_34_best.pth")
+            torch.save(model.state_dict(), "./autoencoder/models/Res_AE_18_best.pth")
             print("Best Loss so far at epoch {} is {}".format(epoch, best_loss))
             print("Saved model")
     encoder.eval()
     decoder.eval()
             
 if not train_AE:
-    model = AE(network='default', num_layers=34).to("cuda")
-    model.load_state_dict(torch.load("./autoencoder/models/Res_AE_34_best.pth"))
+    model = AE(network='default', num_layers=18).to("cuda")
+    model.load_state_dict(torch.load("./autoencoder/models/Res_AE_18_best.pth"))
     encoder = model.encoder
     decoder = model.decoder
 

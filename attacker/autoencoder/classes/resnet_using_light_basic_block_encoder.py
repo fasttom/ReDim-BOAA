@@ -169,13 +169,17 @@ class LightEncoder(nn.Module):
         return nn.Sequential(*layers)
 
     def _forward_impl(self, x: Tensor) -> Tensor:
+
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)
 
         x = self.layer1(x)
         x = self.layer2(x)
-        x = self.layer3(x)
+        x = self.layer3(x)        
+        # to-do: add flatten layer
+        # to-do: add linear layer 1
+        # to-do: add linear layer 2
 
         return x
 
