@@ -181,7 +181,8 @@ class Decoder(nn.Module):
         x = self.unpool(x)
         x = self.de_conv1(x)
         x = self.bn1(x)
-        x = self.relu(x)
+        # x = self.relu(x) - input image is not non-negative, is is centered around 0.
+        # if relu is used, the output image will be non-negative and will not be centered around 0.
         return x
 
 

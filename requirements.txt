@@ -11,3 +11,4 @@ jupyter
 Pillow
 loguru
 argparse
+opencv-python

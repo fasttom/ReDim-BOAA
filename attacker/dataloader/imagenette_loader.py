@@ -44,5 +44,13 @@ def load_data(dataset_type: str = "timm", dataset_name: str = "imagenette2-320",
             use_prefetcher=False,
         )
 
-        return train_loader, test_loader
+        attack_loader = create_loader(
+            dataset=test_dataset,
+            input_size=input_size,
+            batch_size=1,
+            is_training=False,
+            use_prefetcher=False,
+        )
+
+        return train_loader, test_loader, attack_loader
 
