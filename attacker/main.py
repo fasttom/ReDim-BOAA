@@ -1,6 +1,6 @@
 # Autoencoder training part
 
-from dataloader.imagenette_loader import load_data
+from dataloader.imagenette_loader import load_AE_data
 from autoencoder.classes.resnet_autoencoder import AE
 from utils.image_plotter import check_plot
 import torch
@@ -8,12 +8,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 epochs = 100
-train_AE = False
+train_AE = True
 
-train_loader, test_loader, attack_loader = load_data(dataset_type="timm", dataset_name="imagenette2-320", input_size=(3, 224, 224), train_batch=256, test_batch=32)
+train_loader, test_loader = load_AE_data(dataset_type="timm", dataset_name="imagenette2-320", input_size=(3, 224, 224), train_batch=256, test_batch=32)
 
 if train_AE:
-    model = AE(network='default', num_layers=18).to("cuda")
+    model = AE(network='default', num_layers=34).to("cuda")
     encoder = model.encoder
     decoder = model.decoder
 
@@ -40,18 +40,30 @@ if train_AE:
         epoch_loss /= len(train_loader)
         if epoch_loss < best_loss:
             best_loss = epoch_loss
-            torch.save(model.state_dict(), "./autoencoder/models/Res_AE_18_best.pth")
+            torch.save(model.state_dict(), "./autoencoder/models/Res_AE_34_best.pth")
             print("Best Loss so far at epoch {} is {}".format(epoch, best_loss))
             print("Saved model")
     encoder.eval()
     decoder.eval()
-            
-if not train_AE:
-    model = AE(network='default', num_layers=18).to("cuda")
-    model.load_state_dict(torch.load("./autoencoder/models/Res_AE_18_best.pth"))
+
+    # evaluating autoencoder
+    model = AE(network='default', num_layers=34).to("cuda")
+    model.load_state_dict(torch.load("./autoencoder/models/Res_AE_34_best.pth"))
     encoder = model.encoder
     decoder = model.decoder
 
     encoder.eval()
     decoder.eval()
     check_plot(model, test_loader)
+
+    # evaluating autoencoder with attack dataset
+    model = AE(network='default', num_layers=34).to("cuda")
+    model.load_state_dict(torch.load("./autoencoder/models/Res_AE_34_best.pth"))
+    encoder = model.encoder
+    decoder = model.decoder
+
+    encoder.eval()
+    decoder.eval()
+
+    attack_loader = load_AE_data(dataset_type="timm", dataset_name="Caltech-256-Splitted", input_size=(3, 224, 224), victim_batch=32)
+    check_plot(model, attack_loader)

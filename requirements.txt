@@ -12,3 +12,8 @@ Pillow
 loguru
 argparse
 opencv-python
+huggingface-hub
+huggingface-hub[cli]
+datasets[vision]
+transformers
+split-folders
