@@ -1,6 +1,6 @@
 # Autoencoder training part
 
-from dataloader.imagenette_loader import load_AE_data
+from dataloader.imagenette_loader import load_AE_data, load_vicim_data
 from autoencoder.classes.resnet_autoencoder import AE
 from utils.image_plotter import check_plot
 import torch
@@ -13,6 +13,7 @@ train_AE = True
 train_loader, test_loader = load_AE_data(dataset_type="timm", dataset_name="imagenette2-320", input_size=(3, 224, 224), train_batch=256, test_batch=32)
 
 if train_AE:
+    """
     model = AE(network='default', num_layers=34).to("cuda")
     encoder = model.encoder
     decoder = model.decoder
@@ -45,7 +46,7 @@ if train_AE:
             print("Saved model")
     encoder.eval()
     decoder.eval()
-
+    """
     # evaluating autoencoder
     model = AE(network='default', num_layers=34).to("cuda")
     model.load_state_dict(torch.load("./autoencoder/models/Res_AE_34_best.pth"))
@@ -56,6 +57,7 @@ if train_AE:
     decoder.eval()
     check_plot(model, test_loader)
 
+
     # evaluating autoencoder with attack dataset
     model = AE(network='default', num_layers=34).to("cuda")
     model.load_state_dict(torch.load("./autoencoder/models/Res_AE_34_best.pth"))
@@ -65,5 +67,5 @@ if train_AE:
     encoder.eval()
     decoder.eval()
 
-    attack_loader = load_AE_data(dataset_type="timm", dataset_name="Caltech-256-Splitted", input_size=(3, 224, 224), victim_batch=32)
+    attack_loader = load_vicim_data(dataset_type="timm", dataset_name="Caltech-256-Splitted", input_size=(3, 224, 224), victim_batch=32)
     check_plot(model, attack_loader)

@@ -29,7 +29,7 @@ def load_vicim_data(dataset_type: str = "timm", dataset_name: str = "Caltech-256
             use_prefetcher=False,
         )
 
-    return attack_loader
+        return attack_loader
 
 def load_AE_data(dataset_type: str = "timm", dataset_name: str = "imagenette2-320", input_size: tuple = (3, 224, 224), train_batch: int = 32, test_batch: int = 32):
     dataset_path = "./dataset/autoencoder/" + dataset_name
