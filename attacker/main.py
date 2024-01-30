@@ -13,7 +13,7 @@ train_AE = True
 train_loader, test_loader = load_AE_data(dataset_type="timm", dataset_name="imagenette2-320", input_size=(3, 224, 224), train_batch=256, test_batch=32)
 
 if train_AE:
-    """
+    # training autoencoder
     model = AE(network='default', num_layers=34).to("cuda")
     encoder = model.encoder
     decoder = model.decoder
@@ -46,7 +46,8 @@ if train_AE:
             print("Saved model")
     encoder.eval()
     decoder.eval()
-    """
+
+
     # evaluating autoencoder
     model = AE(network='default', num_layers=34).to("cuda")
     model.load_state_dict(torch.load("./autoencoder/models/Res_AE_34_best.pth"))
@@ -55,6 +56,7 @@ if train_AE:
 
     encoder.eval()
     decoder.eval()
+
     check_plot(model, test_loader)
 
 
