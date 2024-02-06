@@ -31,10 +31,25 @@ def load_data(dataset_type: str = "timm", dataset_name: str = "Caltech-256-Split
             no_aug=True
         )
 
-        test_dataset = create_dataset(
+        val_dataset = create_dataset(
             name="val",
             root=dataset_path,
             split="val",
+            seed=42
+        )
+
+        val_loader = create_loader(
+            dataset=val_dataset,
+            input_size=input_size,
+            batch_size=test_batch,
+            is_training=False,
+            use_prefetcher=False,
+        )
+
+        test_dataset = create_dataset(
+            name="test",
+            root=dataset_path,
+            split="test",
             seed=42
         )
 
@@ -46,4 +61,4 @@ def load_data(dataset_type: str = "timm", dataset_name: str = "Caltech-256-Split
             use_prefetcher=False,
         )
 
-        return train_loader, test_loader
+        return train_loader, val_loader, test_loader
