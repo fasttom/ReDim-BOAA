@@ -2,6 +2,7 @@
 
 from dataloader.imagenette_loader import load_AE_data, load_vicim_data
 from autoencoder.classes.resnet_autoencoder import AE
+from autoencoder.train_autoencoder import train_autoencoder
 from utils.image_plotter import check_plot
 import torch
 import torch.nn as nn
@@ -13,75 +14,28 @@ train_AE = True
 train_loader, val_loader = load_AE_data(dataset_type="timm", dataset_name="imagenette2-320", input_size=(3, 224, 224), train_batch=256, test_batch=32)
 
 if train_AE:
-    # training autoencoder
-    model = AE(network='default', num_layers=34).to("cuda")
-    encoder = model.encoder
-    decoder = model.decoder
+    model = train_autoencoder(train_loader, val_loader, num_layers=34, epochs=epochs)
+
+# evaluating autoencoder
+model = AE(network='default', num_layers=34).to("cuda")
+model.load_state_dict(torch.load("./autoencoder/results/Res_AE_34_best.pth"))
+encoder = model.encoder
+decoder = model.decoder
+
+encoder.eval()
+decoder.eval()
+
+check_plot(model, val_loader)
 
 
+# evaluating autoencoder with attack dataset
+model = AE(network='default', num_layers=34).to("cuda")
+model.load_state_dict(torch.load("./autoencoder/results/Res_AE_34_best.pth"))
+encoder = model.encoder
+decoder = model.decoder
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
-    best_loss = 1000000
-    for epoch in range(epochs):
-        # Training phase
-        encoder.train()
-        decoder.train()
-        epoch_loss = 0
-        for batch_idx, (data, target) in enumerate(train_loader):
-            data = data.to("cuda")
-            target = target.to("cuda")
-            optimizer.zero_grad()
-            encoded = encoder(data)
-            decoded = decoder(encoded)
-            loss = F.mse_loss(decoded, data)
-            loss.backward()
-            optimizer.step()
-            epoch_loss += loss.item()
-            if batch_idx % 10 == 0:
-                print("Epoch: {}, Batch: {}, Loss: {}".format(epoch, batch_idx, loss.item()))
-        # Validation phase
-        encoder.eval()
-        decoder.eval()
-        val_loss = 0
-        for batch_idx, (data, target) in enumerate(val_loader):
-            data = data.to("cuda")
-            target = target.to("cuda")
-            encoded = encoder(data)
-            decoded = decoder(encoded)
-            loss = F.mse_loss(decoded, data)
-            val_loss += loss.item()
-            if batch_idx % 10 == 0:
-                print("Epoch: {}, Batch: {}, Loss: {}".format(epoch, batch_idx, loss.item()))
-        epoch_loss /= len(train_loader)
-        val_loss /= len(val_loader)
-        if val_loss < best_loss:
-            best_loss = val_loss
-            torch.save(model.state_dict(), "./autoencoder/models/Res_AE_34_best.pth")
-            print("Best Loss so far at epoch {} is {}".format(epoch, best_loss))
-            print("Saved model")
-    encoder.eval()
-    decoder.eval()
+encoder.eval()
+decoder.eval()
 
-    # evaluating autoencoder
-    model = AE(network='default', num_layers=34).to("cuda")
-    model.load_state_dict(torch.load("./autoencoder/models/Res_AE_34_best.pth"))
-    encoder = model.encoder
-    decoder = model.decoder
-
-    encoder.eval()
-    decoder.eval()
-
-    check_plot(model, val_loader)
-
-
-    # evaluating autoencoder with attack dataset
-    model = AE(network='default', num_layers=34).to("cuda")
-    model.load_state_dict(torch.load("./autoencoder/models/Res_AE_34_best.pth"))
-    encoder = model.encoder
-    decoder = model.decoder
-
-    encoder.eval()
-    decoder.eval()
-
-    attack_loader = load_vicim_data(dataset_type="timm", dataset_name="Caltech-256-Splitted", input_size=(3, 224, 224), victim_batch=32)
-    check_plot(model, attack_loader)
+attack_loader = load_vicim_data(dataset_type="timm", dataset_name="Caltech-256-Splitted", input_size=(3, 224, 224), victim_batch=32)
+check_plot(model, attack_loader)

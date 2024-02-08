@@ -1,7 +1,7 @@
 from dataloader.spliter import split_dataset
 from dataloader.caltech_loader import load_data
 
-from models.train_model import train_model
+from utils.train_model import train_model
 
 from os.path import exists
 
