@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from classes.resnet_autoencoder import AE
+from autoencoder.classes.resnet_autoencoder import AE
 
 def train_autoencoder(train_loader, val_loader, num_layers, epochs = 100):
     # training autoencoder
