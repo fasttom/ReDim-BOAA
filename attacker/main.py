@@ -15,6 +15,8 @@ attack_loader = load_vicim_data(dataset_type="timm", dataset_name="Caltech-256-S
 if train_AE:
     model = train_autoencoder(train_loader, val_loader, num_layers=34, epochs=epochs)
 
+
+
 # evaluating autoencoder
 evaluate_AE(val_loader, model_type="Res_AE", num_layers=34, dataset_name="imagenette2-320")
 
@@ -22,8 +24,7 @@ evaluate_AE(val_loader, model_type="Res_AE", num_layers=34, dataset_name="imagen
 evaluate_AE(attack_loader, model_type="Res_AE", num_layers=34, dataset_name="Caltech-256-Splitted")
 
 # evaluating accuracy of victim model
-mobilenet_accuracy = test_victim(attack_loader, model_name="mobilenetv3_large_100")
-resnet_accuracy = test_victim(attack_loader, model_name="resnet50")
-vgg_accuracy = test_victim(attack_loader, model_name="vgg19")
-vit_tiny_accuracy = test_victim(attack_loader, model_name="vit_small_patch32_224")
-
+mobilenet_accuracy, mobilenet_attack_loader = test_victim(attack_loader, model_name="mobilenetv3_large_100")
+resnet_accuracy, resnet_attack_loader = test_victim(attack_loader, model_name="resnet50")
+vgg_accuracy, vgg_attack_loader = test_victim(attack_loader, model_name="vgg19")
+vit_small_accuracy, vit_small_attack_loader = test_victim(attack_loader, model_name="vit_small_patch32_224")

@@ -1,5 +1,7 @@
 import torch
+from torch.utils.data import Subset
 from timm.models import create_model
+from timm.data.loader import create_loader
 
 def test_victim(loader, model_name:str = "resnet50"):
     victim_model = create_model(model_name, pretrained=True)
@@ -10,6 +12,8 @@ def test_victim(loader, model_name:str = "resnet50"):
     correct = 0
     total = 0
 
+    is_correct = []
+
     with torch.no_grad():
         for data in loader:
             images, labels = data
@@ -19,6 +23,17 @@ def test_victim(loader, model_name:str = "resnet50"):
             _, predicted = torch.max(outputs.data, 1)
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
+            is_correct += (predicted == labels).tolist()
         accuracy = 100 * correct / total
         print(f'Accuracy of the {model_name} on the attack images: {accuracy:.2f} %')
-    return accuracy
+        correct_idx = [i for i, x in enumerate(is_correct) if x]
+
+    well_classified_dataset = Subset(loader.dataset, correct_idx)
+    well_classified_loader = create_loader(
+        well_classified_dataset,
+        input_size=(3, 224, 224),
+        batch_size=32,
+        is_training=False,
+        use_prefetcher=False,
+    )
+    return accuracy, well_classified_loader
