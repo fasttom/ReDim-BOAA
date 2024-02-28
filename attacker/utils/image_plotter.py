@@ -12,7 +12,7 @@ def normalize_image(img):
     img = (img-img.min())/(img.max()-img.min())
     return img
 
-def check_plot(model, loader, dataset_name:str):
+def check_plot(model, loader, dataset_name:str, victim_model:str):
     with torch.no_grad():
         for batch_idx, (data, target) in enumerate(loader):
 
@@ -36,8 +36,8 @@ def check_plot(model, loader, dataset_name:str):
         fig.add_subplot(rows, columns, i)
         plt.imshow(img)
         plt.axis('off')
-    plt.savefig(os.path.join("figs", f"{dataset_name}_input_samples.png"))
-    plt.show()
+    plt.savefig(os.path.join("figs", f"{dataset_name}_{victim_model}_input_samples.png"))
+    plt.show(block=False)
     
 
     fig = plt.figure(figsize=(columns, rows))
@@ -47,6 +47,6 @@ def check_plot(model, loader, dataset_name:str):
         fig.add_subplot(rows, columns, i)
         plt.imshow(img)
         plt.axis('off')
-    plt.savefig(os.path.join("figs", f"{dataset_name}_reconstructed_samples.png"))
-    plt.show()
+    plt.savefig(os.path.join("figs", f"{dataset_name}_{victim_model}_reconstructed_samples.png"))
+    plt.show(block=False)
    
