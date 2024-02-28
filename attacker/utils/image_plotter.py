@@ -6,12 +6,13 @@ import torch.nn as nn
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
 import cv2
+import os
 
 def normalize_image(img):
     img = (img-img.min())/(img.max()-img.min())
     return img
 
-def check_plot(model, loader):
+def check_plot(model, loader, dataset_name:str):
     with torch.no_grad():
         for batch_idx, (data, target) in enumerate(loader):
 
@@ -35,7 +36,9 @@ def check_plot(model, loader):
         fig.add_subplot(rows, columns, i)
         plt.imshow(img)
         plt.axis('off')
+    plt.savefig(os.path.join("figs", f"{dataset_name}_input_samples.png"))
     plt.show()
+    
 
     fig = plt.figure(figsize=(columns, rows))
 
@@ -44,4 +47,6 @@ def check_plot(model, loader):
         fig.add_subplot(rows, columns, i)
         plt.imshow(img)
         plt.axis('off')
+    plt.savefig(os.path.join("figs", f"{dataset_name}_reconstructed_samples.png"))
     plt.show()
+   
