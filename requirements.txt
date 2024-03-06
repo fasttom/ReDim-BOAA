@@ -17,3 +17,5 @@ huggingface-hub[cli]
 datasets[vision]
 transformers
 split-folders
+gpytorch
+botorch
