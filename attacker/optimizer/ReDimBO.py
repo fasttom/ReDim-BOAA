@@ -1,10 +1,9 @@
 import torch
-import botorch
 import numpy as np
 from botorch.models import SingleTaskGP
 from botorch.fit import fit_gpytorch_mll
 from gpytorch.mlls import ExactMarginalLogLikelihood
-from utils import perturbate, relative_loss_gain, random_delta
+from optimizer.utils import perturbate, relative_loss_gain, random_delta
 from botorch.acquisition import ExpectedImprovement, UpperConfidenceBound
 from botorch.optim import optimize_acqf
 
