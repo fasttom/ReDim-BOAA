@@ -12,6 +12,6 @@ train_loader, val_loader, test_loader = load_data(dataset_type="timm", dataset_n
     train_batch=256, test_batch=32)
 
 vgg_model = train_model(train_set=train_loader, val_set=val_loader, model_name="vgg19", epochs=50)
-resnet_model = train_model(train_set=train_loader, val_set=val_loader, model_name="resnet50", epochs=50)
-vit_model = train_model(train_set=train_loader, val_set=val_loader, model_name="vit_small_patch32_224", epochs=50)
-mobile_model = train_model(train_set=train_loader, val_set=val_loader, model_name="mobilenetv3_large_100", epochs=50)
+# resnet_model = train_model(train_set=train_loader, val_set=val_loader, model_name="resnet50", epochs=50)
+# vit_model = train_model(train_set=train_loader, val_set=val_loader, model_name="vit_small_patch32_224", epochs=50)
+# mobile_model = train_model(train_set=train_loader, val_set=val_loader, model_name="mobilenetv3_large_100", epochs=50)
