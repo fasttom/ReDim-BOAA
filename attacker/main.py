@@ -17,22 +17,22 @@ if train_AE:
     model = train_autoencoder(train_loader, val_loader, num_layers=34, epochs=epochs)
 
 # evaluating accuracy of victim model
-# mobilenet_accuracy, mobilenet_attack_loader = test_victim(attack_loader, model_name="mobilenetv3_large_100")
-# resnet_accuracy, resnet_attack_loader = test_victim(attack_loader, model_name="resnet50")
-# vgg_accuracy, vgg_attack_loader = test_victim(attack_loader, model_name="vgg19")
-# vit_small_accuracy, vit_small_attack_loader = test_victim(attack_loader, model_name="vit_small_patch32_224")
+mobilenet_accuracy, mobilenet_attack_loader = test_victim(attack_loader, model_name="mobilenetv3_large_100")
+resnet_accuracy, resnet_attack_loader = test_victim(attack_loader, model_name="resnet50")
+vgg_accuracy, vgg_attack_loader = test_victim(attack_loader, model_name="vgg19")
+vit_small_accuracy, vit_small_attack_loader = test_victim(attack_loader, model_name="vit_small_patch32_224")
 
 # evaluating autoencoder
-# evaluate_AE(val_loader, model_type="Res_AE", num_layers=34, dataset_name="imagenette2-320")
+evaluate_AE(val_loader, model_type="Res_AE", num_layers=34, dataset_name="imagenette2-320")
 
 # evaluating autoencoder on vicitm dataset where victim model classified correctly
-# evaluate_AE(mobilenet_attack_loader, model_type="Res_AE", num_layers=34, dataset_name="Caltech-256-Splitted", victim_model="mobilenetv3_large_100")
-# evaluate_AE(resnet_attack_loader, model_type="Res_AE", num_layers=34, dataset_name="Caltech-256-Splitted", victim_model="resnet50")
-# evaluate_AE(vgg_attack_loader, model_type="Res_AE", num_layers=34, dataset_name="Caltech-256-Splitted", victim_model="vgg19")
-# evaluate_AE(vit_small_attack_loader, model_type="Res_AE", num_layers=34, dataset_name="Caltech-256-Splitted", victim_model="vit_small_patch32_224")
+evaluate_AE(mobilenet_attack_loader, model_type="Res_AE", num_layers=34, dataset_name="Caltech-256-Splitted", victim_model="mobilenetv3_large_100")
+evaluate_AE(resnet_attack_loader, model_type="Res_AE", num_layers=34, dataset_name="Caltech-256-Splitted", victim_model="resnet50")
+evaluate_AE(vgg_attack_loader, model_type="Res_AE", num_layers=34, dataset_name="Caltech-256-Splitted", victim_model="vgg19")
+evaluate_AE(vit_small_attack_loader, model_type="Res_AE", num_layers=34, dataset_name="Caltech-256-Splitted", victim_model="vit_small_patch32_224")
 
 # run attacks
-# mobilenet_originals, mobilenet_advs, mobilenet_used_epochs, mobilenet_asr = run_attack("mobilenetv3_large_100", attack_loader, model, acquisition="EI", feature_len=7, num_channels=512, epoch_lim=200)
-# resnet_originals, resnet_advs, resnet_used_epochs, resnet_asr = run_attack("resnet50", attack_loader, model, acquisition="EI", feature_len=7, num_channels=512, epoch_lim=200)
-# vgg_originals, vgg_advs, vgg_used_epochs, vgg_asr = run_attack("vgg19", attack_loader, model, acquisition="EI", feature_len=7, num_channels=512, epoch_lim=200)
-# vit_small_originals, vit_small_advs, vit_small_used_epochs, vit_small_asr = run_attack("vit_small_patch32_224", attack_loader, model, acquisition="EI", feature_len=7, num_channels=512, epoch_lim=200)
+mobilenet_originals, mobilenet_advs, mobilenet_used_epochs, mobilenet_asr = run_attack("mobilenetv3_large_100", attack_loader, model, acquisition="EI", feature_len=7, num_channels=512, epoch_lim=200)
+resnet_originals, resnet_advs, resnet_used_epochs, resnet_asr = run_attack("resnet50", attack_loader, model, acquisition="EI", feature_len=7, num_channels=512, epoch_lim=200)
+vgg_originals, vgg_advs, vgg_used_epochs, vgg_asr = run_attack("vgg19", attack_loader, model, acquisition="EI", feature_len=7, num_channels=512, epoch_lim=200)
+vit_small_originals, vit_small_advs, vit_small_used_epochs, vit_small_asr = run_attack("vit_small_patch32_224", attack_loader, model, acquisition="EI", feature_len=7, num_channels=512, epoch_lim=200)
