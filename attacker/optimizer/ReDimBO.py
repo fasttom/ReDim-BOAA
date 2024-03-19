@@ -12,7 +12,8 @@ def ReDimBO(image:torch.Tensor,
             acquisition:str = "EI", feature_len:int = 7, num_channels:int = 512, epoch_lim: int = 200):
     # first ten perturbations are selected randomly
     deltas = [random_delta() for _ in range(10)]
-    perturbated_zs = [perturbate(image, delta) for delta in deltas]
+    z = autoencoder.encoder(image.unsqueeze(0)).squeeze(0)
+    perturbated_zs = [perturbate(z, delta) for delta in deltas]
     _ = [relative_loss_gain(image, perturbated_z, labels, true_label, autoencoder, torch.nn.CrossEntropyLoss(), victim_model) for perturbated_z in perturbated_zs]
     loss_gains, real_loss_gains = zip(*_)
     loss_gains = list(loss_gains)

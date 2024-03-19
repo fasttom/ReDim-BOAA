@@ -12,15 +12,20 @@ def descaler(x: torch.Tensor, param: tuple):
     return (x * (max - min) / 2) + center
 
 def clip(x: torch.Tensor, min: float, max: float):
-    return torch.max(torch.min(x, max), min)
+    shaped_max = torch.ones_like(x) * max
+    shaped_min = torch.ones_like(x) * min
+    return torch.max(torch.min(x, shaped_max), shaped_min)
 
 def perturbate(z: torch.Tensor, delta: torch.Tensor, feat_len:int = 7, num_channels: int = 512, min: float = -1, max: float = 1):
     num_pixels = feat_len * feat_len
     delta = clip(delta, min, max)
-    delta_pixel = delta[:num_pixels]
-    delta_channel = delta[num_pixels:]
-    delta_pixel = delta_pixel.expand_as(z)
-    delta_channel = delta_channel.expand_as(z)
+    delta_pixel = delta[:num_pixels].unflatten(0, (feat_len, feat_len)) # 7x7
+    delta_pixel = delta_pixel.unsqueeze(0) # 1x7x7
+    delta_pixel = delta_pixel.expand(num_channels, -1, -1) # 512x7x7
+    delta_channel = delta[num_pixels:] # 512
+    delta_channel = delta_channel.unsqueeze(-1) # 512x1
+    delta_channel = delta_channel.unsqueeze(-1) # 512x1x1
+    delta_channel = delta_channel.expand(-1, feat_len, feat_len) # 512x7x7
     abs_delta_pixel = torch.abs(delta_pixel)
     abs_delta_channel = torch.abs(delta_channel)
     scaled_z, sclae_param = centerd_minmax_scaler(z)
@@ -32,9 +37,9 @@ def perturbate(z: torch.Tensor, delta: torch.Tensor, feat_len:int = 7, num_chann
 def relative_loss_gain(x: torch.Tensor, perturbated_z: torch.Tensor,label_list: list[int], true_label: int, 
                        autoencoder: torch.nn.Module,
                        loss_ft: torch.nn.Module, model: torch.nn.Module, alpha:float = 1.0):
-    perturbated_x = autoencoder.decoder(perturbated_z)
-    true_label_loss = loss_ft(model(perturbated_x), torch.tensor([true_label]))
-    other_label_losses = torch.min([loss_ft(model(perturbated_x), torch.tensor([label])) for label in label_list if label != true_label])
+    perturbated_x = autoencoder.decoder(perturbated_z.unsqueeze(0)).squeeze(0)
+    true_label_loss = loss_ft(model(perturbated_x.unsqueeze(0)).squeeze(0), torch.tensor([true_label]))
+    other_label_losses = torch.min([loss_ft(model(perturbated_x.unsqueeze(0)).squeeze(0), torch.tensor([label])) for label in label_list if label != true_label])
     differnece = torch.mean(torch.abs(x, perturbated_x))
     real_gain = true_label_loss - other_label_losses # attack success when real_gain > 0
     regularized_gain = real_gain - alpha * differnece # bayesian optimize with this to minimize the differnece
@@ -42,5 +47,6 @@ def relative_loss_gain(x: torch.Tensor, perturbated_z: torch.Tensor,label_list: 
 
 def random_delta(feat_len:int = 7, num_channels: int = 512, min: float = -1, max: float = 1):
     num_pixels = feat_len * feat_len
-    delta = torch.rand(size=(num_pixels + num_channels)) * (max - min) + min
+    delta = torch.rand(size=(num_pixels + num_channels,)) * (max - min) + min
     return delta
+
