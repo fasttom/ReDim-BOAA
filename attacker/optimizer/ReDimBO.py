@@ -23,7 +23,7 @@ def ReDimBO(image:torch.Tensor,
         # we will not use the bayesian optimization
         if real_loss_gains[i]>0:
             real_z = perturbated_zs[i]
-            adv_example = autoencoder.decoder(real_z)
+            adv_example = autoencoder.decoder(real_z.unsqueeze(0)).squeeze(0)
             return adv_example, 10, True
     used_epoch = 10
 
@@ -54,7 +54,7 @@ def ReDimBO(image:torch.Tensor,
         loss_gain, real_loss_gain = relative_loss_gain(image, perturbated_z, labels, true_label, autoencoder, torch.nn.CrossEntropyLoss(), victim_model)
         used_epoch += 1
         if real_loss_gain > 0:
-            adv_example = autoencoder.decoder(perturbated_z)
+            adv_example = autoencoder.decoder(perturbated_z.unsqueeze(0)).squeeze(0)
             return adv_example, used_epoch, True
         else:
             deltas.append(candidate)

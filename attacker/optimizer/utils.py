@@ -38,10 +38,11 @@ def relative_loss_gain(x: torch.Tensor, perturbated_z: torch.Tensor,label_list: 
                        autoencoder: torch.nn.Module,
                        loss_ft: torch.nn.Module, model: torch.nn.Module, alpha:float = 1.0):
     perturbated_x = autoencoder.decoder(perturbated_z.unsqueeze(0)).squeeze(0)
-    true_label_loss = loss_ft(model(perturbated_x.unsqueeze(0)).squeeze(0), torch.tensor([true_label]))
-    other_label_losses = torch.min([loss_ft(model(perturbated_x.unsqueeze(0)).squeeze(0), torch.tensor([label])) for label in label_list if label != true_label])
-    differnece = torch.mean(torch.abs(x, perturbated_x))
-    real_gain = true_label_loss - other_label_losses # attack success when real_gain > 0
+    true_label_loss = loss_ft(model(perturbated_x.unsqueeze(0)).squeeze(0), torch.tensor(true_label))
+    other_label_losses = torch.Tensor([loss_ft(model(perturbated_x.unsqueeze(0)).squeeze(0), torch.tensor(label)) for label in label_list if label != true_label])
+    other_label_loss = torch.min(other_label_losses)
+    differnece = torch.mean(torch.abs(x - perturbated_x))
+    real_gain = true_label_loss - other_label_loss # attack success when real_gain > 0
     regularized_gain = real_gain - alpha * differnece # bayesian optimize with this to minimize the differnece
     return regularized_gain, real_gain
 
