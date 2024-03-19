@@ -49,4 +49,25 @@ def check_plot(model, loader, dataset_name:str, victim_model:str):
         plt.axis('off')
     plt.savefig(os.path.join("figs", f"{dataset_name}_{victim_model}_reconstructed_samples.png"))
     plt.show(block=False)
+
+    return None
+
+def adversarial_plot(image:torch.Tensor, adv_image:torch.Tensor):
+    image = image.permute(1,2,0).cpu().detach().numpy()
+    image = normalize_image(image)
+    adv_image = adv_image.permute(1,2,0).cpu().detach().numpy()
+    adv_image = normalize_image(adv_image)
+
+    fig, ax = plt.subplots(1, 2, figsize=(10, 5))
+    ax[0].imshow(image)
+    ax[0].set_title("Original")
+    ax[0].axis('off')
+
+    ax[1].imshow(adv_image)
+    ax[1].set_title("Adversarial")
+    ax[1].axis('off')
+
+    plt.savefig(os.path.join("figs", "adversarial_example.png"))
+    plt.show(block=False)
+
    

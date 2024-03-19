@@ -3,7 +3,7 @@ import numpy as np
 from botorch.models import SingleTaskGP
 from botorch.fit import fit_gpytorch_mll
 from gpytorch.mlls import ExactMarginalLogLikelihood
-from optimizer.utils import perturbate, relative_loss_gain, random_delta
+from optimizer.utils import perturbate, relative_loss_gain, random_delta, image_interpolarate
 from botorch.acquisition import ExpectedImprovement, UpperConfidenceBound
 from botorch.optim import optimize_acqf
 
@@ -11,22 +11,16 @@ def ReDimBO(image:torch.Tensor,
             victim_model: torch.nn.Module, autoencoder: torch.nn.Module, labels: list[int], true_label:int, 
             acquisition:str = "EI", feature_len:int = 7, num_channels:int = 512, epoch_lim: int = 200):
     # first ten perturbations are selected randomly
-    deltas = [random_delta(min = -0.1, max=0.1) for _ in range(10)]
+    deltas = [random_delta() for _ in range(10)] #initial 10 random perturbations
     z = autoencoder.encoder(image.unsqueeze(0)).squeeze(0)
     perturbated_zs = [perturbate(z, delta) for delta in deltas]
-    _ = [relative_loss_gain(image, perturbated_z, labels, true_label, autoencoder, torch.nn.CrossEntropyLoss(), victim_model) for perturbated_z in perturbated_zs]
-    loss_gains, real_loss_gains = zip(*_)
-    loss_gains = list(loss_gains)
-    real_loss_gains = list(real_loss_gains)
+    loss_gains = [relative_loss_gain(image, perturbated_z, labels, true_label, autoencoder, torch.nn.CrossEntropyLoss(), victim_model) for perturbated_z in perturbated_zs]
 
-    for i in range(10): #if the attack is successful by random perturbation, 
-        # we will not use the bayesian optimization
-        if real_loss_gains[i]>0:
-            real_z = perturbated_zs[i]
-            adv_example = autoencoder.decoder(real_z.unsqueeze(0)).squeeze(0)
-            return adv_example, 10, True
+
+    # random perturbation can be too far away from original image
+    # so we will use the first successful perturbation as the initial point
+    # even if initial perturbations are successful
     used_epoch = 10
-
 
     # if given perturbations are not successful, we will use bayesian optimization
     # until the epoch limit is reached
@@ -58,16 +52,16 @@ def ReDimBO(image:torch.Tensor,
 
         # evaluate the candidiate
         perturbated_z = perturbate(z, candidate)
-        loss_gain, real_loss_gain = relative_loss_gain(image, perturbated_z, labels, true_label, autoencoder, torch.nn.CrossEntropyLoss(), victim_model)
+        loss_gain= relative_loss_gain(image, perturbated_z, labels, true_label, autoencoder, torch.nn.CrossEntropyLoss(), victim_model)
         used_epoch += 1
-        if real_loss_gain > 0:
+        if loss_gain > 0:
             adv_example = autoencoder.decoder(perturbated_z.unsqueeze(0)).squeeze(0)
+            adv_example = image_interpolarate(image, adv_example, 0.1)
             return adv_example, used_epoch, True
         else:
             deltas.append(candidate)
             perturbated_zs.append(perturbated_z)
             loss_gains.append(loss_gain)
-            real_loss_gains.append(real_loss_gain)
     
     return None, np.nan, False
 

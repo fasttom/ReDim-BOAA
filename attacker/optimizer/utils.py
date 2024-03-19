@@ -36,18 +36,19 @@ def perturbate(z: torch.Tensor, delta: torch.Tensor, feat_len:int = 7, num_chann
 
 def relative_loss_gain(x: torch.Tensor, perturbated_z: torch.Tensor,label_list: list[int], true_label: int, 
                        autoencoder: torch.nn.Module,
-                       loss_ft: torch.nn.Module, model: torch.nn.Module, alpha:float = 1.0):
+                       loss_ft: torch.nn.Module, model: torch.nn.Module, alpha:float = 0.1):
     perturbated_x = autoencoder.decoder(perturbated_z.unsqueeze(0)).squeeze(0)
+    perturbated_x = image_interpolarate(x, perturbated_x, alpha)
     true_label_loss = loss_ft(model(perturbated_x.unsqueeze(0)).squeeze(0), torch.tensor(true_label))
     other_label_losses = torch.Tensor([loss_ft(model(perturbated_x.unsqueeze(0)).squeeze(0), torch.tensor(label)) for label in label_list if label != true_label])
     other_label_loss = torch.min(other_label_losses)
-    differnece = torch.sum(torch.abs(x - perturbated_x))
-    real_gain = true_label_loss - other_label_loss # attack success when real_gain > 0
-    regularized_gain = real_gain - alpha * differnece # bayesian optimize with this to minimize the differnece
-    return regularized_gain, real_gain
+    gain = true_label_loss - other_label_loss
+    return gain
 
 def random_delta(feat_len:int = 7, num_channels: int = 512, min: float = -1, max: float = 1):
     num_pixels = feat_len * feat_len
     delta = torch.rand(size=(num_pixels + num_channels,)) * (max - min) + min
     return delta
 
+def image_interpolarate(image: torch.Tensor, adv_image: torch.Tensor, alpha: float):
+    return alpha * adv_image + (1 - alpha) * image

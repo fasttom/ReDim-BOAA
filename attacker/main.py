@@ -36,7 +36,7 @@ evaluate_AE(vgg_attack_loader, model_type="Res_AE", num_layers=34, dataset_name=
 evaluate_AE(vit_small_attack_loader, model_type="Res_AE", num_layers=34, dataset_name="Caltech-256-Splitted", victim_model="vit_small_patch32_224")
 
 # run attacks
-mobilenet_originals, mobilenet_advs, mobilenet_used_epochs, mobilenet_asr = run_attack("mobilenetv3_large_100", mobilenet_attack_loader, model, acquisition="EI", feature_len=7, num_channels=512, epoch_lim=200)
-resnet_originals, resnet_advs, resnet_used_epochs, resnet_asr = run_attack("resnet50", resnet_attack_loader, model, acquisition="EI", feature_len=7, num_channels=512, epoch_lim=200)
-vgg_originals, vgg_advs, vgg_used_epochs, vgg_asr = run_attack("vgg19", vgg_attack_loader, model, acquisition="EI", feature_len=7, num_channels=512, epoch_lim=200)
-vit_small_originals, vit_small_advs, vit_small_used_epochs, vit_small_asr = run_attack("vit_small_patch32_224", vit_small_attack_loader, model, acquisition="EI", feature_len=7, num_channels=512, epoch_lim=200)
+mobilenet_originals, mobilenet_advs, mobilenet_used_epochs, mobilenet_asr = run_attack("mobilenetv3_large_100", mobilenet_attack_loader, model, acquisition="EI", feature_len=7, num_channels=512, epoch_lim=50)
+resnet_originals, resnet_advs, resnet_used_epochs, resnet_asr = run_attack("resnet50", resnet_attack_loader, model, acquisition="EI", feature_len=7, num_channels=512, epoch_lim=50)
+vgg_originals, vgg_advs, vgg_used_epochs, vgg_asr = run_attack("vgg19", vgg_attack_loader, model, acquisition="EI", feature_len=7, num_channels=512, epoch_lim=50)
+vit_small_originals, vit_small_advs, vit_small_used_epochs, vit_small_asr = run_attack("vit_small_patch32_224", vit_small_attack_loader, model, acquisition="EI", feature_len=7, num_channels=512, epoch_lim=50)

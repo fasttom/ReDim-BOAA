@@ -2,6 +2,7 @@ from timm.models import create_model
 import torch
 from utils.get_unique_labels import get_unique_labels
 from optimizer.ReDimBO import ReDimBO
+from utils.image_plotter import adversarial_plot
 def run_attack(victim_model_name, dataloader, autoencoder,
                acquisition:str = "EI", feature_len:int = 7, num_channels:int = 512, epoch_lim: int = 200):
     victim_model = create_model(victim_model_name, pretrained=True)
@@ -27,6 +28,8 @@ def run_attack(victim_model_name, dataloader, autoencoder,
                 advs.append(adv_example)
                 used_epochs.append(used_epoch)
                 num_success += 1
+                if num_success == 1: # at first success
+                    adversarial_plot(image, adv_example)
             else:
                 print(f"Attack failed for image {num_success + num_fail}")
                 num_fail += 1
