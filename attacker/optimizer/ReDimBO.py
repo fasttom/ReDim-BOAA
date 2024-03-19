@@ -27,11 +27,17 @@ def ReDimBO(image:torch.Tensor,
             return adv_example, 10, True
     used_epoch = 10
 
+
     # if given perturbations are not successful, we will use bayesian optimization
     # until the epoch limit is reached
     for i in range(epoch_lim-10):
         # ititialize the model
-        gp = SingleTaskGP(deltas, loss_gains)
+        tensor_delta = torch.stack(deltas) # 10x(7x7+512)
+        tensor_delta = tensor_delta.unsqueeze(0) # 1x10x(7x7+512)
+        tensor_loss_gains = torch.Tensor(loss_gains) # 10
+        tensor_loss_gains = tensor_loss_gains.unsqueeze(-1) # 10x1
+        tensor_loss_gains = tensor_loss_gains.unsqueeze(0) # 1x10x1
+        gp = SingleTaskGP(tensor_delta, tensor_loss_gains)
         mll = ExactMarginalLogLikelihood(gp.likelihood, gp)
 
         # fit the model
@@ -47,10 +53,11 @@ def ReDimBO(image:torch.Tensor,
         bounds = torch.stack([torch.ones(feature_len*feature_len+num_channels)*-1, torch.ones(feature_len*feature_len+num_channels)])
 
         # optimize the acquisition function
-        candidate, acq_value = optimize_acqf(AQ, bounds=bounds, q=1, num_restarts=5, raw_samples=int(5+0.5*i))
+        candidate, acq_value = optimize_acqf(AQ, bounds=bounds, q=1, num_restarts=1, raw_samples=i+10)
+        candidate = candidate.squeeze(0)
 
         # evaluate the candidiate
-        perturbated_z = perturbate(image, candidate)
+        perturbated_z = perturbate(z, candidate)
         loss_gain, real_loss_gain = relative_loss_gain(image, perturbated_z, labels, true_label, autoencoder, torch.nn.CrossEntropyLoss(), victim_model)
         used_epoch += 1
         if real_loss_gain > 0:

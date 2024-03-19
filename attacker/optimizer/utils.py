@@ -16,16 +16,18 @@ def clip(x: torch.Tensor, min: float, max: float):
     shaped_min = torch.ones_like(x) * min
     return torch.max(torch.min(x, shaped_max), shaped_min)
 
-def perturbate(z: torch.Tensor, delta: torch.Tensor, feat_len:int = 7, num_channels: int = 512, min: float = -1, max: float = 1):
+def perturbate(z: torch.Tensor, delta: torch.Tensor, feat_len:int = 7, num_channels: int = 512, min: float = -1, max: float = 1, power: float = 0.1):
     num_pixels = feat_len * feat_len
     delta = clip(delta, min, max)
     delta_pixel = delta[:num_pixels].unflatten(0, (feat_len, feat_len)) # 7x7
     delta_pixel = delta_pixel.unsqueeze(0) # 1x7x7
     delta_pixel = delta_pixel.expand(num_channels, -1, -1) # 512x7x7
+    delta_pixel = delta_pixel * power
     delta_channel = delta[num_pixels:] # 512
     delta_channel = delta_channel.unsqueeze(-1) # 512x1
     delta_channel = delta_channel.unsqueeze(-1) # 512x1x1
     delta_channel = delta_channel.expand(-1, feat_len, feat_len) # 512x7x7
+    delta_channel = delta_channel * power
     abs_delta_pixel = torch.abs(delta_pixel)
     abs_delta_channel = torch.abs(delta_channel)
     scaled_z, sclae_param = centerd_minmax_scaler(z)
