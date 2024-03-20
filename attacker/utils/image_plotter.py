@@ -52,7 +52,7 @@ def check_plot(model, loader, dataset_name:str, victim_model:str):
 
     return None
 
-def adversarial_plot(image:torch.Tensor, adv_image:torch.Tensor):
+def adversarial_plot(image:torch.Tensor, adv_image:torch.Tensor, model_name:str, attack_idx:int):
     image = image.permute(1,2,0).cpu().detach().numpy()
     image = normalize_image(image)
     adv_image = adv_image.permute(1,2,0).cpu().detach().numpy()
@@ -67,7 +67,7 @@ def adversarial_plot(image:torch.Tensor, adv_image:torch.Tensor):
     ax[1].set_title("Adversarial")
     ax[1].axis('off')
 
-    plt.savefig(os.path.join("figs", "adversarial_example.png"))
+    plt.savefig(os.path.join("figs", f"{model_name}_attack_{attack_idx}.png"))
     plt.show(block=False)
 
    
