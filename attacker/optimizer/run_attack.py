@@ -28,7 +28,7 @@ def run_attack(victim_model_name, dataloader, autoencoder,
                 advs.append(adv_example)
                 used_epochs.append(used_epoch)
                 num_success += 1
-                adversarial_plot(image, adv_example)
+                adversarial_plot(image, adv_example, victim_model_name, num_success + num_fail)
             else:
                 print(f"Attack failed for image {num_success + num_fail}")
                 num_fail += 1
