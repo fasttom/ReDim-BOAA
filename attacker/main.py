@@ -6,7 +6,9 @@ from autoencoder.classes.resnet_autoencoder import AE
 from autoencoder.train_autoencoder import train_autoencoder
 from utils.eval_AE import evaluate_AE
 from utils.test_victim import test_victim
+from utils.save_summary import save_summary
 from optimizer.run_attack import run_attack
+
 
 epochs = 100
 train_AE = False
@@ -36,7 +38,24 @@ evaluate_AE(vgg_attack_loader, model_type="Res_AE", num_layers=34, dataset_name=
 evaluate_AE(vit_small_attack_loader, model_type="Res_AE", num_layers=34, dataset_name="Caltech-256-Splitted", victim_model="vit_small_patch32_224")
 
 # run attacks
+"""
 mobilenet_originals, mobilenet_advs, mobilenet_used_epochs, mobilenet_asr = run_attack("mobilenetv3_large_100", mobilenet_attack_loader, model, acquisition="EI", feature_len=7, num_channels=512, epoch_lim=100)
+mobilenet_summary = {"epochs": mobilenet_used_epochs, "asr": mobilenet_asr}
+save_summary(mobilenet_summary, "mobilenetv3_large_100")
+"""
+
+"""
 resnet_originals, resnet_advs, resnet_used_epochs, resnet_asr = run_attack("resnet50", resnet_attack_loader, model, acquisition="EI", feature_len=7, num_channels=512, epoch_lim=100)
+resnet_summary = {"epochs": resnet_used_epochs, "asr": resnet_asr}
+save_summary(resnet_summary, "resnet50")
+"""
+
 vgg_originals, vgg_advs, vgg_used_epochs, vgg_asr = run_attack("vgg19", vgg_attack_loader, model, acquisition="EI", feature_len=7, num_channels=512, epoch_lim=100)
+vgg_summary = {"epochs": vgg_used_epochs, "asr": vgg_asr}
+save_summary(vgg_summary, "vgg19")
+
+"""
 vit_small_originals, vit_small_advs, vit_small_used_epochs, vit_small_asr = run_attack("vit_small_patch32_224", vit_small_attack_loader, model, acquisition="EI", feature_len=7, num_channels=512, epoch_lim=100)
+vit_small_summary = {"epochs": vit_small_used_epochs, "asr": vit_small_asr}
+save_summary(vit_small_summary, "vit_small_patch32_224")
+"""
