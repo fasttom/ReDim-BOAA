@@ -49,13 +49,12 @@ resnet_originals, resnet_advs, resnet_used_epochs, resnet_asr = run_attack("resn
 resnet_summary = {"epochs": resnet_used_epochs, "asr": resnet_asr}
 save_summary(resnet_summary, "resnet50")
 """
-
+"""
 vgg_originals, vgg_advs, vgg_used_epochs, vgg_asr = run_attack("vgg19", vgg_attack_loader, model, acquisition="EI", feature_len=7, num_channels=512, epoch_lim=100)
 vgg_summary = {"epochs": vgg_used_epochs, "asr": vgg_asr}
 save_summary(vgg_summary, "vgg19")
-
 """
+
 vit_small_originals, vit_small_advs, vit_small_used_epochs, vit_small_asr = run_attack("vit_small_patch32_224", vit_small_attack_loader, model, acquisition="EI", feature_len=7, num_channels=512, epoch_lim=100)
 vit_small_summary = {"epochs": vit_small_used_epochs, "asr": vit_small_asr}
 save_summary(vit_small_summary, "vit_small_patch32_224")
-"""
