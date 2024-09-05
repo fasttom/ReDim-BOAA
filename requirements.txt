@@ -19,3 +19,9 @@ transformers
 split-folders
 gpytorch
 botorch
+
+# after pip install -r requirements.txt
+# do
+# sudo apt update
+# sudo apt full-upgrade
+# sudo apt install libgl1-mesa-glx
