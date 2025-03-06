@@ -51,7 +51,7 @@ def perturbate_baseline(z: torch.Tensor, delta: torch.Tensor, min: float = -1, m
 
 def relative_loss_gain(x: torch.Tensor, perturbated_z: torch.Tensor,label_list: list[int], true_label: int, 
                        autoencoder: torch.nn.Module,
-                       loss_ft: torch.nn.Module, model: torch.nn.Module, alpha:float = 0.1):
+                       loss_ft: torch.nn.Module, model: torch.nn.Module, alpha:float = 0.02):
     perturbated_x = autoencoder.decoder(perturbated_z.unsqueeze(0)).squeeze(0)
     perturbated_x = image_interpolarate(x, perturbated_x, alpha)
     true_label_loss = loss_ft(model(perturbated_x.unsqueeze(0)).squeeze(0), torch.tensor(true_label))

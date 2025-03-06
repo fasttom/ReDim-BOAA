@@ -56,7 +56,7 @@ def ReDimBO(image:torch.Tensor,
         used_epoch += 1
         if loss_gain > 0:
             adv_example = autoencoder.decoder(perturbated_z.unsqueeze(0)).squeeze(0)
-            adv_example = image_interpolarate(image, adv_example, 0.1)
+            adv_example = image_interpolarate(image, adv_example, 0.02) # alpha=0.02
             return adv_example, used_epoch, True
         else:
             deltas.append(candidate)

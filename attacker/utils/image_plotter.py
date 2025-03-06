@@ -99,7 +99,7 @@ def adversarial_plot(image:torch.Tensor, adv_image:torch.Tensor, model_name:str,
     ax[1].set_title("Adversarial")
     ax[1].axis('off')
 
-    plt.savefig(os.path.join(f"figs/{model_name}", f"Caltech-256_attack_{attack_idx}.png"))
+    # plt.savefig(os.path.join(f"figs/{model_name}", f"Caltech-256_attack_{attack_idx}.png"))
     plt.show(block=False)
 
 
@@ -125,5 +125,5 @@ def noise_plot(image:torch.Tensor, adv_image:torch.Tensor, model_name:str, attac
     ax[2].imshow(noise)
     ax[2].set_title("Difference")
     ax[2].axis("off")
-    plt.savefig(os.path.join(f"figs/{model_name}", f"Caltech-256_attack_{attack_idx}.png"))
+    # plt.savefig(os.path.join(f"figs/{model_name}", f"Caltech-256_attack_{attack_idx}.png"))
     plt.show(block=False)
